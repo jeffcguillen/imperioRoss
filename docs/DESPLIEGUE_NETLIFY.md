@@ -22,7 +22,7 @@ La base local `localhost` no es accesible desde Netlify ni Render. No subas un v
 
 ## Publicar el API en Render
 
-1. Crea un repositorio GitHub privado y sube este proyecto.
+1. El código ya está en GitHub, en `jeffcguillen/imperioRoss`, rama `main`.
 2. En Render, crea un Blueprint desde ese repositorio y selecciona `render.yaml`.
 3. Introduce los tres URLs de conexión de producción y `WEB_ORIGINS` con el dominio de Netlify, por ejemplo `https://imperio-ross.netlify.app`. No incluyas rutas ni barra final.
 4. Si cambias el nombre del servicio Render, actualiza también el destino del proxy en `netlify.toml`.
@@ -33,11 +33,12 @@ El disco persistente de Render tiene costo y queda adjunto a una instancia/servi
 
 ## Publicar el frontend en Netlify
 
-1. Importa el mismo repositorio en Netlify como proyecto Vite. Netlify detecta `netlify.toml`; el comando es `npm run build` y el directorio publicado es `dist`.
-2. Configura `VITE_API_URL` como cadena vacía para producción. El frontend llamará a `/api/v1` y Netlify lo enviará al API configurado en `netlify.toml`.
-3. Configura el dominio final de Netlify como `WEB_ORIGINS` en Render. Si cambia el dominio o se agregan dominios personalizados, actualiza esa lista.
-4. El destino de proxy incluido es `https://imperio-ross-api.onrender.com`; ajústalo si el nombre real de servicio difiere.
-5. Publica y verifica login, cierre de sesión, consulta de sorteos, comprobantes y `health/ready` desde el sitio público.
+1. En Netlify, importa el repositorio GitHub `jeffcguillen/imperioRoss` y selecciona `main` como rama de producción. Netlify detecta `netlify.toml`; el comando es `npm run build` y el directorio publicado es `dist`.
+2. Cada push a `main` generará un nuevo deploy de producción. GitHub Actions ejecutará además `npm ci`, `npm run build` y `npm run typecheck:api` para verificar compilación y tipos.
+3. No necesitas configurar `VITE_API_URL` en Netlify: si no se define, el frontend usa rutas relativas `/api/v1` que el proxy de `netlify.toml` reenvía al API.
+4. Configura el dominio final de Netlify como `WEB_ORIGINS` en Render. Si cambia el dominio o se agregan dominios personalizados, actualiza esa lista.
+5. El destino de proxy incluido es `https://imperio-ross-api.onrender.com`; ajústalo si el nombre real de servicio difiere.
+6. Publica y verifica login, cierre de sesión, consulta de sorteos, comprobantes y `health/ready` desde el sitio público.
 
 ## Jugadas programadas
 
