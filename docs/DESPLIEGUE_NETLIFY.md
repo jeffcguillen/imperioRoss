@@ -1,55 +1,54 @@
 # Despliegue de El Imperio de Ross
 
-## Arquitectura preparada
+## Arquitectura
 
 - Frontend React/Vite en Netlify (`netlify.toml`).
-- API Fastify en Render (`render.yaml`). Se mantiene como servicio Node persistente porque procesa comprobantes en disco y puede ejecutar jugadas programadas.
-- PostgreSQL administrado por separado. La API exige tres logins de mínimo privilegio, además de los roles de grupo que crea el SQL base.
-- Los comprobantes se conservan en el disco persistente privado del servicio API.
+- API Fastify persistente en Render (`render.yaml`).
+- PostgreSQL administrado en Supabase. Netlify y GitHub no alojan ni ejecutan la base de datos.
+- Comprobantes en el disco persistente privado del servicio API en Render.
 
-El proxy `/api/*` de Netlify permite que el navegador use el mismo origen para el frontend y el API. Esto conserva la cookie de sesión `SameSite=Strict` y evita habilitar cookies entre sitios.
+Netlify reenvía `/api/*` al servicio Render y conserva la sesión del mismo origen. El frontend, la API y PostgreSQL deben estar desplegados y conectados para que el login funcione.
 
-## Antes de cargar la base de producción
+## Crear y preparar Supabase
 
-1. Crea una base PostgreSQL vacía en un proveedor administrado con PostgreSQL 15 o superior.
-2. Guarda un respaldo verificable de la base local por separado. El SQL base no migra una base existente.
-3. Instala `imperio_de_ross_completo.sql` solamente en la base vacía. El archivo contiene datos DEMO, bancos ficticios y hashes marcadores `REEMPLAZAR_HASH_REAL`; no son cuentas utilizables ni datos de producción. Reemplaza esos datos antes de abrir el sitio al público y registra cuentas administrativas nuevas con contraseñas únicas.
-4. Crea los logins de runtime (`ir_api_staff`, `ir_api_admin`, `ir_migrator`) sin superusuario ni `BYPASSRLS`. Otorga `rf_api_staff` al login staff y `rf_api_admin` al login admin. El usuario propietario instala el SQL inicial y aplica migraciones desde un entorno operativo controlado; no conectes la API como propietario, `rf_dev` ni superusuario.
-5. Configura conexiones TLS del proveedor para `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `DATABASE_MIGRATOR_URL`. Mantén en Render únicamente credenciales de runtime de mínimo privilegio; la API no debe tener las credenciales del propietario.
-6. Configura `CLAIM_CODE_KEY` en el backend como secreto aleatorio estable de al menos 32 caracteres (por ejemplo, genera 32 bytes con un administrador de secretos). La clave cifra los códigos privados de premios; no la incluyas en Git, no la copies al frontend y no la rotes mientras existan códigos cifrados, salvo que regeneres los códigos de premios pendientes.
-7. Revisa las extensiones `pgcrypto`, `citext` y `pg_trgm` que solicita el SQL y confirma que el proveedor las permite.
+1. Crea un proyecto PostgreSQL en Supabase y conserva el `Project reference` y la contraseña de base de datos.
+2. En el botón **Connect** del proyecto, copia la cadena **Session pooler**. Render ejecuta un backend Node persistente sobre IPv4; usa el pooler de sesión en puerto `5432`. No uses Transaction pooler `6543`: pierde estado de sesión y no es compatible con algunas operaciones de esta API. Mantén `sslmode=require` en la URL.
+3. Copia `database/supabase.env.example` a `.local/supabase.env` y completa `SUPABASE_PROJECT_REF` y `SUPABASE_DB_URL`. `.local/` está excluido de Git.
+4. Asegúrate de que el proyecto Supabase sea nuevo y que no exista el esquema `app`. Solo entonces configura `SUPABASE_INSTALL_EMPTY_DB=YES` en el archivo local y ejecuta:
 
-El conjunto actual de migraciones 0006-0008 crea un rol interno `NOLOGIN` y transfiere a este la propiedad de funciones `SECURITY DEFINER`; por eso el primer despliegue de estas migraciones requiere ejecutar `npm run db:migrate` desde un entorno operativo con credenciales propietarias/administrativas. Usa `DATABASE_MIGRATOR_URL` de mínimo privilegio para los procesos habituales y nunca lo sustituyas por la cuenta propietaria dentro del servicio Render.
+   ```cmd
+   npm run db:install:supabase
+   npm run db:migrate:supabase
+   npm run db:bootstrap:supabase
+   ```
 
-La base local `localhost` no es accesible desde Netlify ni Render. No subas un volcado con datos reales a GitHub.
+   El instalador se niega a continuar si ya existe el esquema `app`. Instala `imperio_de_ross_completo.sql`, aplica todas las migraciones como propietario desde tu máquina y genera roles de API con contraseñas aleatorias. El bootstrap también reemplaza los hashes marcadores de las cuatro cuentas DEMO por contraseñas aleatorias. No sobrescribe roles ni contraseñas que ya existan.
 
-## Publicar el API en Render
+5. Conserva de forma privada los archivos generados:
+   - `.local/supabase-runtime.env`: `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `CLAIM_CODE_KEY` para los secretos de Render.
+   - `.local/supabase-demo-users.txt`: teléfonos y contraseñas DEMO para el primer ingreso y la verificación.
 
-1. El código ya está en GitHub, en `jeffcguillen/imperioRoss`, rama `main`.
-2. En Render, crea un Blueprint desde ese repositorio y selecciona `render.yaml`.
-3. Introduce los tres URLs de conexión de producción y `WEB_ORIGINS` con el dominio de Netlify, por ejemplo `https://imperio-ross.netlify.app`. No incluyas rutas ni barra final.
-4. Si cambias el nombre del servicio Render, actualiza también el destino del proxy en `netlify.toml`.
-5. Ejecuta las migraciones contra la base nueva desde un entorno controlado usando `DATABASE_MIGRATOR_URL` y `npm run db:migrate`. Haz una copia de seguridad antes de cada migración posterior.
-6. Comprueba `https://<api>/health/ready` y que el despliegue no registre `INVALID_STAFF_DATABASE_ROLE` ni `INVALID_ADMIN_DATABASE_ROLE`.
+El usuario propietario de Supabase queda únicamente en `.local/supabase.env`, usado desde tu equipo para instalar y migrar. **No lo configures en Render.** La base inicial contiene datos demostrativos y cuentas DEMO; no copia automáticamente los registros de tu PostgreSQL local. Revisa y sustituye los datos de demostración antes de recibir operaciones reales.
 
-El disco persistente de Render tiene costo y queda adjunto a una instancia/servicio; configura respaldo y retención de comprobantes según las obligaciones del negocio.
+## Desplegar el API en Render
 
-## Publicar el frontend en Netlify
+1. En Render crea un Blueprint desde `jeffcguillen/imperioRoss`, rama `main`, y selecciona `render.yaml`.
+2. Configura `WEB_ORIGINS` con el dominio exacto de Netlify, sin ruta ni barra final. Por ejemplo: `https://imperioross.netlify.app`.
+3. Desde `.local/supabase-runtime.env`, copia `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `CLAIM_CODE_KEY` a las variables secretas correspondientes del servicio. No agregues la cadena del propietario de Supabase.
+4. El API valida los roles en su inicio. En los logs no debe aparecer `INVALID_STAFF_DATABASE_ROLE` ni `INVALID_ADMIN_DATABASE_ROLE`. Comprueba `https://imperio-ross-api.onrender.com/health/ready`; debe responder `{"status":"ready"}`.
+5. Si el nombre o dominio del servicio API en Render cambia, actualiza el proxy en `netlify.toml` y vuelve a publicar el frontend.
 
-1. En Netlify, importa el repositorio GitHub `jeffcguillen/imperioRoss` y selecciona `main` como rama de producción. Netlify detecta `netlify.toml`; el comando es `npm run build` y el directorio publicado es `dist`.
-2. Cada push a `main` generará un nuevo deploy de producción. GitHub Actions ejecutará además `npm ci`, `npm run build` y `npm run typecheck:api` para verificar compilación y tipos.
-3. No necesitas configurar `VITE_API_URL` en Netlify: si no se define, el frontend usa rutas relativas `/api/v1` que el proxy de `netlify.toml` reenvía al API.
-4. Configura el dominio final de Netlify como `WEB_ORIGINS` en Render. Si cambia el dominio o se agregan dominios personalizados, actualiza esa lista.
-5. El destino de proxy incluido es `https://imperio-ross-api.onrender.com`; ajústalo si el nombre real de servicio difiere.
-6. Publica y verifica login, cierre de sesión, consulta de sorteos, comprobantes y `health/ready` desde el sitio público.
+El servicio API usa un disco persistente para comprobantes y puede tener costo. Configura respaldos y retención según las necesidades del negocio.
 
-## Jugadas programadas
+## Desplegar el frontend en Netlify
 
-La configuración inicial las deja deshabilitadas. Después de comprobar el entorno, define `SCHEDULED_PLAYS_TENANT_IDS` con el UUID autorizado del tenant y cambia `SCHEDULED_PLAYS_ENABLED=true` en Render. El proceso del API ejecuta el scheduler y la base serializa los trabajos concurrentes. No uses el tenant local de producción sin verificar que corresponde a la base recién instalada.
+1. Importa `jeffcguillen/imperioRoss`, rama `main`. Netlify lee `netlify.toml`, ejecuta `npm run build` y publica `dist`.
+2. No configures `VITE_API_URL` en Netlify: el frontend usa `/api/v1` y Netlify lo reenvía al API.
+3. Después del deploy, verifica login, cierre de sesión, sorteos, tickets y comprobantes. El login DEMO inicial se consulta en `.local/supabase-demo-users.txt`.
 
-## Secretos y datos
+## Secretos, datos y migraciones futuras
 
-- Nunca versionar `.env`, archivos `.local`, respaldos SQL con datos reales, claves ni credenciales de proveedores.
-- El navegador solo debe recibir `VITE_API_URL`; URLs de DB, contraseñas y claves de almacenamiento son secretos exclusivos del backend.
-- Rotar cualquier clave que haya sido compartida fuera de los paneles de los proveedores.
-- Las funciones de correo/SMS y pasarelas de pago requieren credenciales reales y configuración adicional antes de operar transacciones reales.
+- No subas `.env`, `.local/`, volcados con datos reales, contraseñas ni credenciales de proveedores a GitHub.
+- Las migraciones iniciales se ejecutan desde el equipo del propietario usando Supabase Session pooler. El propietario no se almacena en Render.
+- `npm run db:install:supabase` es solo para una base vacía y no importa el contenido de tu base local. Nunca lo uses para reemplazar una base que ya tiene datos.
+- No habilites operaciones reales de pagos, correo o SMS hasta configurar y verificar sus credenciales de proveedor.

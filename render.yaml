@@ -25,8 +25,6 @@ services:
         sync: false
       - key: DATABASE_ADMIN_URL
         sync: false
-      - key: DATABASE_MIGRATOR_URL
-        sync: false
       - key: CLAIM_CODE_KEY
         sync: false
       - key: SESSION_TTL_DAYS
