@@ -1,5 +1,5 @@
-import { randomBytes } from 'node:crypto';
-import { mkdir, readdir, unlink, writeFile } from 'node:fs/promises';
+import { createHash, randomBytes } from 'node:crypto';
+import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import bcrypt from 'bcryptjs';
 import pg from 'pg';
@@ -54,10 +54,51 @@ try {
     await client.query('BEGIN');
     const migrationNames = (await readdir(resolve('database/migrations')))
       .filter((name) => /^\d{4}_[a-z0-9_]+\.sql$/.test(name)).sort();
-    const appliedMigrations = await client.query<{ version: string }>('SELECT version FROM app.schema_migrations');
-    const appliedVersions = new Set(appliedMigrations.rows.map(({ version }) => version));
-    if (!migrationNames.length || migrationNames.some((name) => !appliedVersions.has(name))) {
-      throw new Error('Faltan migraciones. Ejecuta npm run db:migrate:supabase primero.');
+    if (!migrationNames.length) throw new Error('No se encontraron las migraciones de la aplicación.');
+
+    const supabaseHistory = await client.query<{ exists: boolean }>(
+      "SELECT to_regclass('supabase_migrations.schema_migrations') IS NOT NULL AS exists",
+    );
+    if (supabaseHistory.rows[0]?.exists) {
+      const supabaseFiles = (await readdir(resolve('supabase/migrations')))
+        .filter((name) => /^\d{14}_[a-z0-9_]+\.sql$/.test(name)).sort();
+      const supabaseApplied = await client.query<{ version: string }>(
+        'SELECT version::text FROM supabase_migrations.schema_migrations',
+      );
+      const supabaseAppliedVersions = new Set(supabaseApplied.rows.map(({ version }) => version));
+      if (supabaseFiles.some((name) => !supabaseAppliedVersions.has(name.slice(0, 14)))) {
+        throw new Error('Supabase aún no aplicó todas las migraciones de GitHub. Espera el deploy de la integración y vuelve a ejecutar el bootstrap.');
+      }
+
+      for (const name of migrationNames) {
+        const supabaseName = supabaseFiles.find((file) => file.endsWith(`_${name.replace(/^\d{4}_/, '')}`));
+        if (!supabaseName) throw new Error(`No existe una migración Supabase equivalente a ${name}.`);
+        const source = await readFile(resolve('database/migrations', name), 'utf8');
+        const checksum = createHash('sha256').update(source).digest('hex');
+        const existing = await client.query<{ checksum_sha256: string }>(
+          'SELECT checksum_sha256 FROM app.schema_migrations WHERE version = $1', [name],
+        );
+        if (existing.rows[0] && existing.rows[0].checksum_sha256 !== checksum) {
+          throw new Error(`El checksum registrado para ${name} no coincide con el archivo local.`);
+        }
+        if (!existing.rows[0]) {
+          await client.query(
+            'INSERT INTO app.schema_migrations (version, checksum_sha256) VALUES ($1, $2)', [name, checksum],
+          );
+        }
+      }
+    } else {
+      const appliedMigrations = await client.query<{ version: string; checksum_sha256: string }>(
+        'SELECT version, checksum_sha256 FROM app.schema_migrations',
+      );
+      const appliedVersions = new Map(appliedMigrations.rows.map(({ version, checksum_sha256 }) => [version, checksum_sha256]));
+      for (const name of migrationNames) {
+        const source = await readFile(resolve('database/migrations', name), 'utf8');
+        const checksum = createHash('sha256').update(source).digest('hex');
+        if (appliedVersions.get(name) !== checksum) {
+          throw new Error(`Falta aplicar o validar la migración ${name}. Ejecuta npm run db:migrate:supabase.`);
+        }
+      }
     }
 
     const existingRoles = await client.query<{ rolname: string }>(
