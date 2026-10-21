@@ -1,0 +1,27 @@
+.admin-plans-page{display:grid;gap:1.25rem}
+.plan-editor{padding:clamp(1rem,2.5vw,1.6rem);display:grid;gap:1.25rem}
+.plan-editor .panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.plan-editor .panel-heading h2{margin:.3rem 0 0;font-size:1.2rem}
+.plan-editor-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;align-items:end}
+.plan-version-context{grid-column:1/-1;display:grid;gap:.35rem;padding:.9rem 1rem;border:1px solid var(--line,#e9e3d7);border-radius:14px;background:var(--surface-soft,#faf8f3)}
+.plan-version-context span,.plan-editor-actions>span{color:var(--muted,#77736b);font-size:.84rem}
+.plan-prize-list{display:grid;gap:.7rem}
+.plan-prize-row{display:grid;grid-template-columns:2.5rem minmax(9rem,1fr) minmax(8rem,.7fr) minmax(8rem,auto);align-items:end;gap:.8rem;padding:.8rem;border:1px solid var(--line,#e9e3d7);border-radius:12px;background:var(--surface,#fff)}
+.plan-prize-row>strong{padding-bottom:.75rem;color:var(--gold-700,#8b681b)}
+.plan-prize-preview{padding:0 0 .72rem;color:var(--muted,#77736b);font-size:.8rem;white-space:nowrap}
+.plan-editor-actions{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.3rem}
+.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:1rem}
+.plan-card{padding:1.1rem;display:grid;align-content:start;gap:.75rem}
+.plan-card.is-inactive{opacity:.76}
+.plan-card-top{display:flex;justify-content:space-between;align-items:center;gap:.7rem}
+.plan-digits{font-size:.78rem;font-weight:700;color:var(--gold-700,#8b681b);background:var(--gold-soft,#f7f0de);padding:.35rem .6rem;border-radius:99px}
+.plan-card h2{font-size:1.1rem;margin:0}
+.plan-card>p{margin:0;color:var(--muted,#77736b);font-size:.84rem}
+.plan-card-prizes{display:grid;gap:.45rem;padding:.8rem 0;border-top:1px solid var(--line,#e9e3d7);border-bottom:1px solid var(--line,#e9e3d7)}
+.plan-card-prizes>div{display:flex;justify-content:space-between;gap:.75rem;font-size:.83rem}
+.plan-card-prizes>div span{color:var(--muted,#77736b)}
+.plan-card-prizes>div strong{white-space:nowrap}
+.plan-card-actions{display:flex;gap:.55rem;flex-wrap:wrap}
+.plan-card-actions .button{min-height:2.35rem;padding:.5rem .7rem;font-size:.8rem}
+@media(max-width:760px){.plan-editor-fields{grid-template-columns:1fr}.plan-prize-row{grid-template-columns:2rem minmax(0,1fr) minmax(7rem,.7fr)}.plan-prize-preview{grid-column:2/-1;padding:0}.plan-editor-actions{align-items:stretch}.plan-editor-actions .button{width:100%;justify-content:center}}
+@media(max-width:440px){.plan-prize-row{grid-template-columns:1.6rem minmax(0,1fr)}.plan-prize-row .field{grid-column:2}.plan-prize-preview{grid-column:2}}

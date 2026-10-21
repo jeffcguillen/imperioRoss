@@ -1,0 +1,229 @@
+/* Ross Fortuna visual system, adapted from fortuna-gold-main without changing API-backed features. */
+:root {
+  color-scheme: dark;
+  --background: oklch(.12 .015 165);
+  --midnight: var(--background);
+  --foreground: oklch(.95 .012 85);
+  --card: oklch(.165 .02 165);
+  --surface-raised: oklch(.2 .022 165);
+  --muted-foreground: oklch(.7 .02 90);
+  --emerald: oklch(.38 .09 160);
+  --emerald-deep: oklch(.27 .07 163);
+  --emerald-bright: oklch(.74 .17 155);
+  --gold: oklch(.76 .12 85);
+  --gold-light: oklch(.92 .08 90);
+  --gold-deep: oklch(.55 .1 75);
+  --gold-wash: oklch(.76 .12 85 / .05);
+  --gold-hover: oklch(.76 .12 85 / .1);
+  --border: oklch(.76 .12 85 / .28);
+  --input: oklch(.76 .12 85 / .25);
+  --bg: var(--background);
+  --panel: var(--card);
+  --panel-2: var(--surface-raised);
+  --muted: var(--muted-foreground);
+  --white: var(--foreground);
+  --green: var(--emerald-bright);
+  --green-dark: var(--emerald);
+  --gold-dim: var(--gold-deep);
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --radius: .875rem;
+}
+
+body { color: var(--foreground); background: var(--background); font-family: 'Karla', sans-serif; -webkit-font-smoothing: antialiased; }
+.fortuna-gold-app { min-height: 100dvh; overflow-x: clip; background: var(--background); }
+.fortuna-gold-app .shell-header { position: sticky; inset: 0 0 auto; z-index: 40; height: auto; min-height: 88px; border-bottom: 1px solid var(--border); background: color-mix(in oklch, var(--background) 92%, transparent); backdrop-filter: blur(18px); }
+.fortuna-gold-app .header-inner { width: 100%; max-width: 1392px; min-height: 88px; margin: 0 auto; padding: 8px 44px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.fortuna-gold-app .header-brand { display: flex; flex: 0 0 auto; align-items: center; gap: 13px; }
+.fortuna-gold-app .navigation-logo { width: 125px; height: 66px; object-fit: contain; }
+.fortuna-gold-app .header-tagline { max-width: 118px; color: var(--muted-foreground); font: italic 500 14px/1.25 var(--font-display); }
+.fortuna-gold-app .header-nav { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 1.8vw, 28px); }
+.fortuna-gold-app .header-nav a { position: relative; display: flex; min-height: 48px; align-items: center; color: var(--muted-foreground); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; transition: color .18s ease; }
+.fortuna-gold-app .header-nav a:hover, .fortuna-gold-app .header-nav a.active { color: var(--gold-light); }
+.fortuna-gold-app .header-nav a.active::after { position: absolute; right: 0; bottom: 0; left: 0; height: 2px; background: var(--gold); content: ''; }
+.fortuna-gold-app .header-end { display: flex; flex: 0 0 auto; align-items: center; gap: 16px; }
+.fortuna-gold-app .header-icon, .fortuna-gold-app .header-menu-toggle { position: relative; display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: .75rem; background: transparent; color: var(--muted-foreground); cursor: pointer; }
+.fortuna-gold-app .header-icon:hover, .fortuna-gold-app .header-menu-toggle:hover { border-color: var(--border); color: var(--gold-light); }
+.fortuna-gold-app .header-icon .notification-count { position: absolute; top: 0; right: 0; min-width: 16px; height: 16px; padding: 0 4px; border: 1px solid var(--background); border-radius: 999px; background: var(--gold); color: var(--background); font-size: 9px; line-height: 14px; text-align: center; }
+.fortuna-gold-app .header-account { display: inline-flex; align-items: center; gap: 8px; color: var(--foreground); font-size: 12px; white-space: nowrap; }
+.fortuna-gold-app .header-account .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gold-wash); color: var(--gold-light); }
+.fortuna-gold-app .header-menu-toggle { display: inline-flex; padding: 0 12px; font-size: 11px; }
+.fortuna-gold-app .gold-menu { position: absolute; top: calc(100% + 8px); right: max(24px, calc((100vw - 1304px) / 2)); z-index: 45; display: grid; width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 120px); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; overflow: auto; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in oklch, var(--card) 97%, black); box-shadow: 0 24px 60px #0008; }
+.fortuna-gold-app .gold-menu-link { display: flex; min-height: 46px; align-items: center; gap: 10px; padding: 0 12px; border-radius: .625rem; color: var(--muted-foreground); font-size: 12px; }
+.fortuna-gold-app .gold-menu-link svg:last-child { margin-left: auto; opacity: .6; }
+.fortuna-gold-app .gold-menu-link:hover, .fortuna-gold-app .gold-menu-link.active { background: var(--gold-wash); color: var(--gold-light); }
+.fortuna-gold-app .main-area { display: flex; min-height: calc(100dvh - 88px); margin: 0; flex-direction: column; }
+.fortuna-gold-app .page-content { width: 100%; max-width: 1392px; margin: 0 auto; padding: 42px 44px 60px; flex: 1; }
+.fortuna-gold-app .page-heading { margin: 0 0 30px; align-items: flex-end; gap: 20px; }
+.fortuna-gold-app .page-heading h1 { margin: 8px 0 9px; color: var(--foreground); font: 500 clamp(34px, 4.2vw, 54px)/1.04 var(--font-display); letter-spacing: -.025em; }
+.fortuna-gold-app .page-heading p { max-width: 700px; color: var(--muted-foreground); font-size: 14px; line-height: 1.75; }
+.fortuna-gold-app .eyebrow { color: var(--gold); font-size: 10px; letter-spacing: .18em; }
+.fortuna-gold-app .panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); box-shadow: 0 8px 24px #0003; }
+.fortuna-gold-app .button { min-height: 48px; padding: 0 18px; border-radius: .75rem; font-size: 11px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.fortuna-gold-app .button-green { border: 1px solid color-mix(in oklch, var(--emerald-bright) 25%, transparent); background: linear-gradient(140deg, var(--emerald), var(--emerald-deep)); color: var(--foreground); }
+.fortuna-gold-app .button-green:hover:not(:disabled) { border-color: var(--gold); background: var(--emerald); }
+.fortuna-gold-app .button-outline { border-color: var(--border); color: var(--gold-light); }
+.fortuna-gold-app .button-outline:hover:not(:disabled) { background: var(--gold-wash); }
+.fortuna-gold-app input, .fortuna-gold-app select, .fortuna-gold-app textarea { min-height: 46px; border-color: var(--input); border-radius: .625rem; background: color-mix(in oklch, var(--background) 78%, var(--card)); color: var(--foreground); }
+.fortuna-gold-app :focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+.fortuna-gold-app .shell-footer { width: 100%; margin-top: auto; padding: 30px 44px calc(24px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); }
+.fortuna-gold-app .footer-inner { display: grid; max-width: 1304px; margin: auto; grid-template-columns: auto minmax(150px, 1fr) auto; align-items: center; gap: 18px 28px; }
+.fortuna-gold-app .footer-logo { width: 118px; height: auto; }
+.fortuna-gold-app .footer-tagline { color: var(--gold); font: italic 500 18px/1.3 var(--font-display); }
+.fortuna-gold-app .footer-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px 22px; }
+.fortuna-gold-app .footer-nav a { color: var(--muted-foreground); font-size: 11px; }
+.fortuna-gold-app .footer-nav a:hover { color: var(--gold-light); }
+.fortuna-gold-app .footer-copy { grid-column: 1/-1; padding-top: 14px; border-top: 1px solid color-mix(in oklch, var(--border) 65%, transparent); color: var(--muted-foreground); font-size: 10px; }
+.fortuna-gold-app .mobile-nav { display: none; }
+
+/* Gold reference home, with live tenant data in place of its prototype fixtures. */
+.fortuna-gold-app .imperio-home { display: grid; gap: 30px; }
+.fortuna-gold-app .home-welcome { display: flex; min-height: 170px; align-items: center; justify-content: space-between; gap: 24px; padding: 4px 4px 24px; border-bottom: 1px solid var(--border); }
+.fortuna-gold-app .home-welcome h1 { margin: 12px 0 4px; font: 500 clamp(44px, 6vw, 74px)/.98 var(--font-display); letter-spacing: -.035em; }
+.fortuna-gold-app .home-welcome h1 em { color: var(--gold); font-weight: 500; }
+.fortuna-gold-app .home-welcome p:last-child { margin-top: 12px; color: var(--muted-foreground); font-size: 15px; }
+.fortuna-gold-app .home-cover-logo { width: clamp(124px, 17vw, 205px); max-height: 165px; object-fit: contain; }
+.fortuna-gold-app .home-balance { position: relative; display: flex; min-height: 158px; align-items: center; justify-content: space-between; gap: 24px; overflow: hidden; padding: 24px 34px; border-block: 1px solid var(--input); background: linear-gradient(110deg, var(--emerald-deep), var(--emerald) 72%, color-mix(in oklch, var(--emerald) 70%, var(--gold-deep))); }
+.fortuna-gold-app .balance-copy { position: relative; z-index: 1; display: grid; gap: 4px; }
+.fortuna-gold-app .balance-label { display: flex; align-items: center; gap: 7px; color: var(--foreground); font-size: 12px; }
+.fortuna-gold-app .balance-visibility { display: grid; width: 32px; height: 32px; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--gold-light); cursor: pointer; }
+.fortuna-gold-app .balance-amount { color: var(--gold-light); font: 500 clamp(36px, 5vw, 58px)/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.fortuna-gold-app .balance-copy small { color: color-mix(in oklch, var(--foreground) 78%, transparent); font-size: 11px; }
+.fortuna-gold-app .balance-signin { color: var(--foreground); font-size: 14px; }
+.fortuna-gold-app .balance-access { display: inline-flex; align-items: center; gap: 7px; margin-top: 3px; color: var(--gold-light); font-size: 12px; }
+.fortuna-gold-app .balance-emblem { position: absolute; right: 7%; color: color-mix(in oklch, var(--gold) 35%, transparent); transform: rotate(-14deg) scale(2.4); }
+.fortuna-gold-app .home-balance .button { position: relative; z-index: 1; }
+.fortuna-gold-app .button-gold { border: 1px solid var(--gold); background: var(--gold); color: var(--background); }
+.fortuna-gold-app .button-gold:hover:not(:disabled) { background: var(--gold-light); }
+.fortuna-gold-app .home-modules { display: grid; gap: 14px; }
+.fortuna-gold-app .home-modules .home-section-heading { margin: 0; }
+.fortuna-gold-app .home-module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 218px), 1fr)); gap: 12px; }
+.fortuna-gold-app .home-module-card { display: flex; min-width: 0; min-height: 148px; align-items: flex-start; gap: 13px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, var(--card), color-mix(in oklch, var(--background) 64%, var(--card))); color: var(--foreground); text-decoration: none; transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease; }
+.fortuna-gold-app .home-module-card:hover, .fortuna-gold-app .home-module-card:focus-visible { transform: translateY(-2px); border-color: var(--gold); background: linear-gradient(145deg, color-mix(in oklch, var(--gold) 7%, var(--card)), var(--card)); box-shadow: 0 12px 28px #0003; }
+.fortuna-gold-app .home-module-icon { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; border: 1px solid var(--input); border-radius: 12px; background: var(--gold-wash); color: var(--gold); }
+.fortuna-gold-app .home-module-copy { display: grid; min-width: 0; flex: 1; gap: 7px; }
+.fortuna-gold-app .home-module-copy>strong { color: var(--foreground); font-size: 13px; line-height: 1.35; }
+.fortuna-gold-app .home-module-copy>small { min-height: 32px; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
+.fortuna-gold-app .home-module-open { display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; color: var(--gold-light); font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+.fortuna-gold-app .home-module-open svg { transition: transform .18s ease; }
+.fortuna-gold-app .home-module-card:hover .home-module-open svg { transform: translateX(3px); }
+.fortuna-gold-app .home-special { position: relative; display: flex; min-height: 255px; align-items: center; justify-content: space-between; gap: 28px; overflow: hidden; padding: 30px 38px; border: 1px solid var(--input); border-radius: var(--radius); background: radial-gradient(ellipse at 78% 50%, color-mix(in oklch, var(--gold) 12%, transparent), transparent 34%), linear-gradient(112deg, var(--emerald-deep), color-mix(in oklch, var(--emerald-deep) 68%, var(--background))); }
+.fortuna-gold-app .special-banner-copy { position: relative; z-index: 2; max-width: 430px; }
+.fortuna-gold-app .special-banner-copy h2 { margin: 9px 0; font: 500 clamp(32px, 4vw, 48px)/1 var(--font-display); }
+.fortuna-gold-app .special-banner-copy>p:not(.eyebrow) { max-width: 400px; margin: 0 0 19px; color: var(--muted-foreground); font-size: 13px; line-height: 1.7; }
+.fortuna-gold-app .special-banner-art { position: absolute; top: 0; right: 6%; display: grid; width: 270px; height: 100%; place-items: center; color: var(--gold); opacity: .85; }
+.fortuna-gold-app .special-orbit { position: absolute; border: 1px solid color-mix(in oklch, var(--gold) 34%, transparent); border-radius: 50%; }
+.fortuna-gold-app .special-orbit-one { width: 215px; height: 170px; transform: rotate(-28deg); }
+.fortuna-gold-app .special-orbit-two { width: 175px; height: 215px; transform: rotate(34deg); opacity: .5; }
+.fortuna-gold-app .special-art-coin { display: grid; width: 102px; height: 102px; place-items: center; border: 1px solid var(--gold); border-radius: 50%; background: radial-gradient(circle, color-mix(in oklch, var(--gold-deep) 35%, var(--card)), var(--background)); box-shadow: 0 0 0 8px color-mix(in oklch, var(--gold) 7%, transparent), 0 0 44px color-mix(in oklch, var(--gold) 14%, transparent); }
+.fortuna-gold-app .special-clover { position: absolute; top: 30px; right: 16px; }
+.fortuna-gold-app .home-draws { padding-top: 9px; }
+.fortuna-gold-app .home-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 19px; }
+.fortuna-gold-app .home-section-heading h2 { margin-top: 6px; font: 500 clamp(31px, 4vw, 44px)/1.05 var(--font-display); }
+.fortuna-gold-app .home-section-heading>span { color: var(--muted-foreground); font-size: 11px; line-height: 1.65; text-align: right; }
+.fortuna-gold-app .live-draw-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.fortuna-gold-app .live-draw-card { display: flex; min-height: 246px; flex-direction: column; padding: 19px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, var(--card), color-mix(in oklch, var(--background) 60%, var(--card))); }
+.fortuna-gold-app .live-draw-card.is-demo { border-style: dashed; border-color: color-mix(in oklch, var(--gold) 48%, transparent); }
+.fortuna-gold-app .live-draw-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.fortuna-gold-app .draw-badge { padding: 5px 7px; border: 1px solid color-mix(in oklch, var(--emerald-bright) 30%, transparent); border-radius: 3px; color: var(--emerald-bright); font-size: 8px; letter-spacing: .08em; white-space: nowrap; }
+.fortuna-gold-app .draw-badge.demo { border-color: var(--input); color: var(--gold-light); }
+.fortuna-gold-app .live-draw-card h3 { margin: 16px 0 5px; font: 500 25px/1.08 var(--font-display); }
+.fortuna-gold-app .live-draw-date { color: var(--muted-foreground); font-size: 11px; line-height: 1.55; }
+.fortuna-gold-app .live-draw-modalities { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
+.fortuna-gold-app .live-draw-modalities span { padding: 5px 7px; border: 1px solid color-mix(in oklch, var(--border) 68%, transparent); border-radius: 3px; color: var(--muted-foreground); font-size: 9px; }
+.fortuna-gold-app .live-draw-action { width: 100%; min-height: 42px; margin-top: auto; }
+.fortuna-gold-app .draw-state { display: flex; min-height: 150px; flex-direction: column; align-items: center; justify-content: center; gap: 9px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--muted-foreground); font-size: 12px; text-align: center; }
+.fortuna-gold-app .draw-state strong { color: var(--foreground); font: 500 18px var(--font-display); }
+.fortuna-gold-app .draw-state>span { max-width: 480px; line-height: 1.6; }
+.fortuna-gold-app .home-trust { display: flex; align-items: center; gap: 9px; padding-top: 17px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; }
+.fortuna-gold-app .home-trust svg { color: var(--emerald-bright); }
+.fortuna-gold-app .home-trust a { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: var(--gold-light); }
+.fortuna-gold-app .ticket-lookup-form { display: grid; width: min(100%, 560px); gap: 12px; margin-inline: auto; padding: 22px; }
+.fortuna-gold-app .ticket-lookup-form .field-label { color: var(--muted-foreground); font-size: 12px; font-weight: 600; }
+.fortuna-gold-app .ticket-lookup-form .text-input { min-height: 48px; padding: 0 13px; border: 1px solid var(--border); border-radius: 7px; outline: none; background: var(--background); color: var(--foreground); font: 600 16px/1 'Karla', sans-serif; letter-spacing: .12em; }
+.fortuna-gold-app .ticket-lookup-form .text-input:focus-visible { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in oklch, var(--gold) 16%, transparent); }
+.fortuna-gold-app .ticket-lookup-form .button { justify-content: center; }
+.fortuna-gold-app .responsible-play { display: grid; gap: 13px; padding: 23px; }
+.fortuna-gold-app .responsible-play h2 { margin: 0; font: 500 30px/1 var(--font-display); }
+.fortuna-gold-app .responsible-play ul { display: grid; gap: 12px; margin: 0; padding-left: 20px; color: var(--muted-foreground); font-size: 13px; line-height: 1.65; }
+.fortuna-gold-app .responsible-play p { color: var(--muted-foreground); font-size: 12px; line-height: 1.65; }
+.fortuna-gold-app .responsible-play .text-link { display: inline-flex; align-items: center; gap: 6px; }
+.fortuna-gold-app .ticket-void-controls { grid-column: 1/-1; display: grid; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px; }
+.fortuna-gold-app .ticket-void-controls>form { display: grid; gap: 8px; }
+.fortuna-gold-app .ticket-void-controls .field { display: grid; gap: 5px; color: var(--muted-foreground); font-size: 10px; }
+.fortuna-gold-app .ticket-void-controls .field input { min-height: 38px; padding: 0 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--background); color: var(--foreground); }
+.fortuna-gold-app .ticket-void-controls small { color: var(--muted-foreground); font-size: 10px; line-height: 1.5; }
+.fortuna-gold-app .ticket-void-controls form>div { display: flex; justify-content: flex-end; gap: 8px; }
+.fortuna-gold-app .ticket-void-controls .form-notice { font-size: 10px; }
+
+@media (max-width: 1120px) {
+  .fortuna-gold-app .header-inner { padding-inline: 28px; gap: 15px; }
+  .fortuna-gold-app .header-tagline { display: none; }
+  .fortuna-gold-app .header-nav { gap: 14px; }
+  .fortuna-gold-app .header-nav a { font-size: 9px; letter-spacing: .06em; }
+  .fortuna-gold-app .page-content { padding-inline: 28px; }
+}
+@media (max-width: 760px) {
+  body { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+  .fortuna-gold-app .shell-header { position: sticky; min-height: 72px; }
+  .fortuna-gold-app .header-inner { min-height: 72px; padding: 6px 16px; gap: 8px; }
+  .fortuna-gold-app .navigation-logo { width: 101px; height: 57px; }
+  .fortuna-gold-app .header-nav { display: none; }
+  .fortuna-gold-app .header-end { gap: 6px; }
+  .fortuna-gold-app .header-account { gap: 0; }
+  .fortuna-gold-app .header-account>span:last-child { display: none; }
+  .fortuna-gold-app .header-menu-toggle { display: inline-flex; min-width: 44px; padding: 0 9px; }
+  .fortuna-gold-app .header-menu-toggle span { display: none; }
+  .fortuna-gold-app .gold-menu { position: fixed; top: 72px; right: 10px; left: 10px; width: auto; max-height: calc(100dvh - 160px); grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: auto; }
+  .fortuna-gold-app .gold-menu-link { min-height: 44px; gap: 7px; padding-inline: 8px; font-size: 10px; }
+  .fortuna-gold-app .main-area { min-height: auto; }
+  .fortuna-gold-app .page-content { padding: 27px 17px 38px; }
+  .fortuna-gold-app .page-heading { margin-bottom: 22px; }
+  .fortuna-gold-app .page-heading h1 { font-size: 39px; }
+  .fortuna-gold-app .page-heading p { font-size: 13px; }
+  .fortuna-gold-app .imperio-home { gap: 23px; }
+  .fortuna-gold-app .home-welcome { min-height: 140px; padding: 0 0 20px; }
+  .fortuna-gold-app .home-welcome h1 { font-size: clamp(39px, 11vw, 55px); }
+  .fortuna-gold-app .home-welcome p:last-child { font-size: 13px; }
+  .fortuna-gold-app .home-cover-logo { width: 96px; max-height: 104px; }
+  .fortuna-gold-app .home-balance { min-height: 144px; padding: 20px; flex-wrap: wrap; gap: 12px; }
+  .fortuna-gold-app .balance-amount { font-size: 39px; }
+  .fortuna-gold-app .home-balance .button { min-height: 42px; padding-inline: 11px; font-size: 9px; }
+  .fortuna-gold-app .balance-emblem { right: 17%; opacity: .45; }
+  .fortuna-gold-app .home-shortcut { min-height: 70px; gap: 8px; padding: 9px; font-size: 10px; }
+  .fortuna-gold-app .home-shortcut>span { width: 32px; height: 32px; }
+  .fortuna-gold-app .home-shortcut>svg:last-child { width: 13px; }
+  .fortuna-gold-app .home-special { min-height: 245px; padding: 24px 20px; }
+  .fortuna-gold-app .special-banner-copy { max-width: 68%; }
+  .fortuna-gold-app .special-banner-copy h2 { font-size: 34px; }
+  .fortuna-gold-app .special-banner-copy>p:not(.eyebrow) { font-size: 11px; }
+  .fortuna-gold-app .special-banner-art { right: -68px; transform: scale(.83); opacity: .48; }
+  .fortuna-gold-app .home-section-heading h2 { font-size: 35px; }
+  .fortuna-gold-app .home-section-heading>span { font-size: 9px; }
+  .fortuna-gold-app .live-draw-grid { grid-template-columns: 1fr; gap: 10px; }
+  .fortuna-gold-app .live-draw-card { min-height: 220px; padding: 17px; }
+  .fortuna-gold-app .live-draw-card h3 { font-size: 24px; }
+  .fortuna-gold-app .live-draw-modalities span { font-size: 9px; }
+  .fortuna-gold-app .home-trust { align-items: flex-start; flex-wrap: wrap; }
+  .fortuna-gold-app .home-trust a { width: 100%; margin: 3px 0 0 27px; }
+  .fortuna-gold-app .shell-footer { padding: 26px 18px calc(102px + env(safe-area-inset-bottom)); }
+  .fortuna-gold-app .footer-inner { grid-template-columns: auto 1fr; gap: 10px 18px; }
+  .fortuna-gold-app .footer-logo { width: 90px; }
+  .fortuna-gold-app .footer-tagline { font-size: 16px; }
+  .fortuna-gold-app .footer-nav { grid-column: 1/-1; justify-content: flex-start; gap: 14px; }
+  .fortuna-gold-app .footer-copy { grid-column: 1/-1; line-height: 1.6; }
+  .fortuna-gold-app .mobile-nav { position: fixed; inset: auto 0 0; z-index: 50; display: grid; height: calc(64px + env(safe-area-inset-bottom)); grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 5px 4px calc(5px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: color-mix(in oklch, var(--background) 96%, transparent); backdrop-filter: blur(18px); }
+  .fortuna-gold-app .mobile-nav-link { display: flex; min-width: 0; min-height: 52px; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: var(--muted-foreground); font-size: 9px; }
+  .fortuna-gold-app .mobile-nav-link svg { width: 20px; height: 20px; stroke-width: 1.5; }
+  .fortuna-gold-app .mobile-nav-link.active { color: var(--gold-light); }
+}
+@media (max-width: 380px) {
+  .fortuna-gold-app .header-account .avatar { width: 30px; height: 30px; }
+  .fortuna-gold-app .home-cover-logo { width: 80px; }
+  .fortuna-gold-app .home-section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .fortuna-gold-app .home-section-heading>span { text-align: left; }
+  .fortuna-gold-app .draw-badge { font-size: 7px; }
+  .fortuna-gold-app .live-draw-meta { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fortuna-gold-app *, .fortuna-gold-app *::before, .fortuna-gold-app *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

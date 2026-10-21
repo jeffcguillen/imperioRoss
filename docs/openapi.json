@@ -1,0 +1,2645 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "El Imperio de Ross API",
+    "version": "1.0.0",
+    "description": "Rutas documentadas en docs/API.md. Las rutas versionadas usan /api/v1; /api permanece como alias compatible."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3000",
+      "description": "Desarrollo local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "openapi.json"
+    },
+    {
+      "name": "tenant"
+    },
+    {
+      "name": "auth"
+    },
+    {
+      "name": "sessions"
+    },
+    {
+      "name": "results"
+    },
+    {
+      "name": "raffles"
+    },
+    {
+      "name": "payment-options"
+    },
+    {
+      "name": "orders"
+    },
+    {
+      "name": "tickets"
+    },
+    {
+      "name": "guest-purchases"
+    },
+    {
+      "name": "wallet"
+    },
+    {
+      "name": "notifications"
+    },
+    {
+      "name": "favorites"
+    },
+    {
+      "name": "pos"
+    },
+    {
+      "name": "contracts"
+    },
+    {
+      "name": "admin"
+    },
+    {
+      "name": "prizes"
+    },
+    {
+      "name": "docs"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "ross_session"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/openapi.json": {
+      "get": {
+        "operationId": "get_openapi_document",
+        "tags": [
+          "docs"
+        ],
+        "summary": "Documento OpenAPI (solo desarrollo)",
+        "responses": {
+          "200": {
+            "description": "Documento OpenAPI 3.1."
+          },
+          "404": {
+            "description": "Fuera del modo desarrollo."
+          }
+        }
+      }
+    },
+    "/api/v1/tenant/config": {
+      "get": {
+        "operationId": "get_tenant_config",
+        "tags": [
+          "tenant"
+        ],
+        "summary": "Conectado a PostgreSQL",
+        "description": "Acceso: Público por host. Ruta de compatibilidad original: /api/tenant/config.",
+        "responses": {
+          "200": {
+            "description": "Conectado a PostgreSQL"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "operationId": "post_auth_register",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Implementado",
+        "description": "Acceso: Público, rate limit. Ruta de compatibilidad original: /api/auth/register.",
+        "responses": {
+          "200": {
+            "description": "Implementado"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "post_auth_login",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Implementado",
+        "description": "Acceso: Público, rate limit. Ruta de compatibilidad original: /api/auth/login.",
+        "responses": {
+          "200": {
+            "description": "Implementado"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "post_auth_logout",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Implementado",
+        "description": "Acceso: Sesión opcional. Ruta de compatibilidad original: /api/auth/logout.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Implementado"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "get_auth_me",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Implementado",
+        "description": "Acceso: Sesión. Ruta de compatibilidad original: /api/auth/me.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Implementado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/profile": {
+      "patch": {
+        "operationId": "patch_auth_profile",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Actualiza nombre/teléfono/correo; valida formato y unicidad por tenant, con auditoría SQL",
+        "description": "Acceso: Dueño autenticado. Ruta de compatibilidad original: /api/auth/profile.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualiza nombre/teléfono/correo; valida formato y unicidad por tenant, con auditoría SQL"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/password/change": {
+      "post": {
+        "operationId": "post_auth_password_change",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Hash bcrypt, revocación de sesiones existentes y nueva cookie; rate limit",
+        "description": "Acceso: Sesión con contraseña actual. Ruta de compatibilidad original: /api/auth/password/change.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hash bcrypt, revocación de sesiones existentes y nueva cookie; rate limit"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/auth/recovery": {
+      "post": {
+        "operationId": "post_auth_recovery",
+        "tags": [
+          "auth"
+        ],
+        "summary": "Pendiente de proveedor real de correo/SMS",
+        "description": "Acceso: Público, rate limit. Ruta de compatibilidad original: /api/auth/recovery.",
+        "responses": {
+          "200": {
+            "description": "Pendiente de proveedor real de correo/SMS"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/sessions/open": {
+      "get": {
+        "operationId": "get_sessions_open",
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Conectado; sesiones reales",
+        "description": "Acceso: Público por tenant. Ruta de compatibilidad original: /api/sessions/open.",
+        "responses": {
+          "200": {
+            "description": "Conectado; sesiones reales"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/results": {
+      "get": {
+        "operationId": "get_results",
+        "tags": [
+          "results"
+        ],
+        "summary": "Conectado",
+        "description": "Acceso: Público por tenant. Ruta de compatibilidad original: /api/results.",
+        "responses": {
+          "200": {
+            "description": "Conectado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/raffles": {
+      "get": {
+        "operationId": "get_raffles",
+        "tags": [
+          "raffles"
+        ],
+        "summary": "Conectado",
+        "description": "Acceso: Público por tenant/módulo. Ruta de compatibilidad original: /api/raffles.",
+        "responses": {
+          "200": {
+            "description": "Conectado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/payment-options": {
+      "get": {
+        "operationId": "get_payment_options",
+        "tags": [
+          "payment-options"
+        ],
+        "summary": "Conectado",
+        "description": "Acceso: Público por tenant. Ruta de compatibilidad original: /api/payment-options.",
+        "responses": {
+          "200": {
+            "description": "Conectado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "post_orders",
+        "tags": [
+          "orders"
+        ],
+        "summary": "Compra transaccional con idempotencia y comprobante privado",
+        "description": "Acceso: Invitado o cliente. Ruta de compatibilidad original: /api/orders.",
+        "responses": {
+          "200": {
+            "description": "Compra transaccional con idempotencia y comprobante privado"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/tickets": {
+      "get": {
+        "operationId": "get_tickets",
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Conectado; devuelve 401 sin sesión",
+        "description": "Acceso: Dueño autenticado. Ruta de compatibilidad original: /api/tickets.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conectado; devuelve 401 sin sesión"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/tickets/verify/{code}": {
+      "get": {
+        "operationId": "get_tickets_verify_code",
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Verifica ticket sin exponer datos del comprador",
+        "description": "Acceso: Público, 20/min. Ruta de compatibilidad original: /api/tickets/verify/:code.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Verifica ticket sin exponer datos del comprador"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/guest-purchases/recovery/start": {
+      "post": {
+        "operationId": "post_guest_purchases_recovery_start",
+        "tags": [
+          "guest-purchases"
+        ],
+        "summary": "Aceptación genérica; valida código+teléfono por tenant y emite OTP mock solo en desarrollo local",
+        "description": "Acceso: Público, 4/15 min. Ruta de compatibilidad original: /api/guest-purchases/recovery/start.",
+        "responses": {
+          "200": {
+            "description": "Aceptación genérica; valida código+teléfono por tenant y emite OTP mock solo en desarrollo local"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/guest-purchases/recovery/verify": {
+      "post": {
+        "operationId": "post_guest_purchases_recovery_verify",
+        "tags": [
+          "guest-purchases"
+        ],
+        "summary": "Consume OTP de un solo uso; solo devuelve compra de invitado después de verificar ambos datos",
+        "description": "Acceso: Público, 8/15 min. Ruta de compatibilidad original: /api/guest-purchases/recovery/verify.",
+        "responses": {
+          "200": {
+            "description": "Consume OTP de un solo uso; solo devuelve compra de invitado después de verificar ambos datos"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/wallet": {
+      "get": {
+        "operationId": "get_wallet",
+        "tags": [
+          "wallet"
+        ],
+        "summary": "Conectado",
+        "description": "Acceso: Dueño autenticado. Ruta de compatibilidad original: /api/wallet.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conectado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/wallet/recharges": {
+      "get": {
+        "operationId": "get_wallet_recharges",
+        "tags": [
+          "wallet"
+        ],
+        "summary": "Historial propio de recargas y motivos de rechazo",
+        "description": "Acceso: Cliente dueño. Ruta de compatibilidad original: /api/wallet/recharges.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historial propio de recargas y motivos de rechazo"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_wallet_recharges",
+        "tags": [
+          "wallet"
+        ],
+        "summary": "Comprobante privado, idempotencia y saldo pendiente de aprobación",
+        "description": "Acceso: Cliente dueño, multipart. Ruta de compatibilidad original: /api/wallet/recharges.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comprobante privado, idempotencia y saldo pendiente de aprobación"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "get_notifications",
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Conectado",
+        "description": "Acceso: Dueño autenticado. Ruta de compatibilidad original: /api/notifications.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conectado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/favorites": {
+      "get": {
+        "operationId": "get_favorites",
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Números favoritos de su propio usuario y tenant",
+        "description": "Acceso: Cliente autenticado. Ruta de compatibilidad original: /api/favorites.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Números favoritos de su propio usuario y tenant"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_favorites",
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Guarda número de 2–4 cifras; conserva ceros iniciales y rechaza duplicados",
+        "description": "Acceso: Cliente autenticado. Ruta de compatibilidad original: /api/favorites.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Guarda número de 2–4 cifras; conserva ceros iniciales y rechaza duplicados"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/favorites/{id}": {
+      "delete": {
+        "operationId": "delete_favorites_id",
+        "tags": [
+          "favorites"
+        ],
+        "summary": "Elimina solo si el favorito pertenece al usuario y tenant autenticados",
+        "description": "Acceso: Cliente dueño. Ruta de compatibilidad original: /api/favorites/:id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Elimina solo si el favorito pertenece al usuario y tenant autenticados"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/pos/sales": {
+      "get": {
+        "operationId": "get_pos_sales",
+        "tags": [
+          "pos"
+        ],
+        "summary": "Historial propio; limita compras por vendedor o trabajador autenticado",
+        "description": "Acceso: Trabajador/vendedor con `sale.register`. Ruta de compatibilidad original: /api/pos/sales.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historial propio; limita compras por vendedor o trabajador autenticado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/pos/orders": {
+      "post": {
+        "operationId": "post_pos_orders",
+        "tags": [
+          "pos"
+        ],
+        "summary": "Venta de mostrador idempotente, emite ticket y genera comisión cuando aplica un plan activo",
+        "description": "Acceso: Trabajador/vendedor con `sale.register` y local asignado. Ruta de compatibilidad original: /api/pos/orders.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Venta de mostrador idempotente, emite ticket y genera comisión cuando aplica un plan activo"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/pos/commissions": {
+      "get": {
+        "operationId": "get_pos_commissions",
+        "tags": [
+          "pos"
+        ],
+        "summary": "Comisiones propias; trabajadores y clientes reciben 403",
+        "description": "Acceso: Vendedor con `sale.register`. Ruta de compatibilidad original: /api/pos/commissions.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comisiones propias; trabajadores y clientes reciben 403"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/tickets/{ticketId}/repeat": {
+      "get": {
+        "operationId": "get_tickets_ticketId_repeat",
+        "tags": [
+          "tickets"
+        ],
+        "summary": "Devuelve solo las líneas activas de su propio ticket para cargarlas como nuevo borrador; no compra ni cobra",
+        "description": "Acceso: Cliente registrado, propietario del ticket. Ruta de compatibilidad original: /api/tickets/:ticketId/repeat.",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Devuelve solo las líneas activas de su propio ticket para cargarlas como nuevo borrador; no compra ni cobra"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/contracts": {
+      "get": {
+        "operationId": "get_contracts",
+        "tags": [
+          "contracts"
+        ],
+        "summary": "Contratas propias del vendedor; administración ve las del tenant",
+        "description": "Acceso: Vendedor con `sale.register` o admin con `report.view`. Ruta de compatibilidad original: /api/contracts.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contratas propias del vendedor; administración ve las del tenant"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/contracts/slots/{slotId}/sell": {
+      "post": {
+        "operationId": "post_contracts_slots_slotId_sell",
+        "tags": [
+          "contracts"
+        ],
+        "summary": "Convierte un cupo reservado en venta con idempotencia",
+        "description": "Acceso: Vendedor dueño de la Contrata. Ruta de compatibilidad original: /api/contracts/slots/:slotId/sell.",
+        "parameters": [
+          {
+            "name": "slotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convierte un cupo reservado en venta con idempotencia"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/orders/pending": {
+      "get": {
+        "operationId": "get_admin_orders_pending",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cola real por pool admin",
+        "description": "Acceso: Sesión con `order.approve`. Ruta de compatibilidad original: /api/admin/orders/pending.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cola real por pool admin"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/review": {
+      "post": {
+        "operationId": "post_admin_orders_orderId_review",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Llama `fn_review_order` o `fn_reject_order` en transacción",
+        "description": "Acceso: Sesión con `order.approve`. Ruta de compatibilidad original: /api/admin/orders/:orderId/review.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Llama `fn_review_order` o `fn_reject_order` en transacción"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/proofs/{proofId}": {
+      "get": {
+        "operationId": "get_admin_orders_orderId_proofs_proofId",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Archivo privado, tenant/orden comprobados, sin caché",
+        "description": "Acceso: Sesión con `order.approve`. Ruta de compatibilidad original: /api/admin/orders/:orderId/proofs/:proofId.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proofId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo privado, tenant/orden comprobados, sin caché"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/recharges/pending": {
+      "get": {
+        "operationId": "get_admin_recharges_pending",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cola de transferencias a billetera",
+        "description": "Acceso: Admin con `recharge.approve`. Ruta de compatibilidad original: /api/admin/recharges/pending.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cola de transferencias a billetera"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/recharges/{rechargeId}/review": {
+      "post": {
+        "operationId": "post_admin_recharges_rechargeId_review",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Llama `fn_review_recharge`; aprueba/acredita o rechaza con motivo",
+        "description": "Acceso: Admin con `recharge.approve`. Ruta de compatibilidad original: /api/admin/recharges/:rechargeId/review.",
+        "parameters": [
+          {
+            "name": "rechargeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Llama `fn_review_recharge`; aprueba/acredita o rechaza con motivo"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/recharges/{rechargeId}/proofs/{proofId}": {
+      "get": {
+        "operationId": "get_admin_recharges_rechargeId_proofs_proofId",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Archivo privado ligado a recarga y tenant",
+        "description": "Acceso: Admin con `recharge.approve`. Ruta de compatibilidad original: /api/admin/recharges/:rechargeId/proofs/:proofId.",
+        "parameters": [
+          {
+            "name": "rechargeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proofId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo privado ligado a recarga y tenant"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/results/sessions": {
+      "get": {
+        "operationId": "get_admin_results_sessions",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Sesiones sorteadas y resultados vigentes para publicar/corregir",
+        "description": "Acceso: Admin con `result.edit`. Ruta de compatibilidad original: /api/admin/results/sessions.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesiones sorteadas y resultados vigentes para publicar/corregir"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/results": {
+      "post": {
+        "operationId": "post_admin_results",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Publica mediante `fn_register_result`; versión, premios y auditoría atómicos",
+        "description": "Acceso: Admin con `result.edit`. Ruta de compatibilidad original: /api/admin/results.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Publica mediante `fn_register_result`; versión, premios y auditoría atómicos"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/dashboard": {
+      "get": {
+        "operationId": "get_admin_dashboard",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Métricas de hoy por zona horaria del tenant",
+        "description": "Acceso: Admin con `report.view`. Ruta de compatibilidad original: /api/admin/dashboard.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Métricas de hoy por zona horaria del tenant"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/demo/status": {
+      "get": {
+        "operationId": "get_admin_demo_status",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Conteos agregados de registros identificables como DEMO en el tenant; no devuelve datos personales ni financieros",
+        "description": "Acceso: Admin con `report.view`. Ruta de compatibilidad original: /api/admin/demo/status.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conteos agregados de registros identificables como DEMO en el tenant; no devuelve datos personales ni financieros"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/search?q=...": {
+      "get": {
+        "operationId": "get_admin_search_q",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Busca usuarios, compras y tickets del tenant; exige dos caracteres y devuelve hasta 40 resultados mínimos",
+        "description": "Acceso: Admin con `report.view`. Ruta de compatibilidad original: /api/admin/search?q=....",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Busca usuarios, compras y tickets del tenant; exige dos caracteres y devuelve hasta 40 resultados mínimos"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users": {
+      "get": {
+        "operationId": "get_admin_users",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Búsqueda y paginación; excluye hashes, secretos y datos de sesión",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/users.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Búsqueda y paginación; excluye hashes, secretos y datos de sesión"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_admin_users",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Crea trabajador/vendedor con clave inicial hasheada, local y motivo auditado; permisos individuales parten desactivados",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/users.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Crea trabajador/vendedor con clave inicial hasheada, local y motivo auditado; permisos individuales parten desactivados"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/locations": {
+      "get": {
+        "operationId": "get_admin_locations",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Lista locales activos e inactivos del tenant; solo locales activos se ofrecen para asignación",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/locations.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista locales activos e inactivos del tenant; solo locales activos se ofrecen para asignación"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_admin_locations",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Crea un local dentro del tenant y audita el motivo; nombre duplicado devuelve 409",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/locations.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Crea un local dentro del tenant y audita el motivo; nombre duplicado devuelve 409"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/locations/{locationId}": {
+      "patch": {
+        "operationId": "patch_admin_locations_locationId",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Edita nombre/ciudad/dirección del local del tenant, con before/after y motivo auditados",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/locations/:locationId.",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Edita nombre/ciudad/dirección del local del tenant, con before/after y motivo auditados"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/locations/{locationId}/status": {
+      "patch": {
+        "operationId": "patch_admin_locations_locationId_status",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Activa/desactiva con motivo auditado; no permite desactivar mientras tenga personal activo asignado",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/locations/:locationId/status.",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activa/desactiva con motivo auditado; no permite desactivar mientras tenga personal activo asignado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tenant": {
+      "get": {
+        "operationId": "get_admin_tenant",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Lee marca y configuración del tenant resuelto por el servidor",
+        "description": "Acceso: Admin con `tenant.manage`. Ruta de compatibilidad original: /api/admin/tenant.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lee marca y configuración del tenant resuelto por el servidor"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch_admin_tenant",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Actualiza dominio personalizado, branding, zona horaria, idioma, moneda y flag de rifas; exige dominio único, revisión vigente y motivo auditado",
+        "description": "Acceso: Admin con `tenant.manage`. Ruta de compatibilidad original: /api/admin/tenant.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualiza dominio personalizado, branding, zona horaria, idioma, moneda y flag de rifas; exige dominio único, revisión vigente y motivo auditado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users/{userId}/role": {
+      "patch": {
+        "operationId": "patch_admin_users_userId_role",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cambia personal activo entre trabajador/vendedor; exige local activo y motivo auditado; no cambia cuentas admin/cliente",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/users/:userId/role.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cambia personal activo entre trabajador/vendedor; exige local activo y motivo auditado; no cambia cuentas admin/cliente"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/roles/permissions": {
+      "get": {
+        "operationId": "get_admin_roles_permissions",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Matriz configurable de trabajadores y vendedores",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/roles/permissions.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matriz configurable de trabajadores y vendedores"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch_admin_roles_permissions",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Actualiza permiso editable y agrega auditoría con motivo; acciones reservadas quedan protegidas",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/roles/permissions.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Actualiza permiso editable y agrega auditoría con motivo; acciones reservadas quedan protegidas"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/users/{userId}/status": {
+      "patch": {
+        "operationId": "patch_admin_users_userId_status",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Activa/desactiva y revoca sesiones al desactivar; motivo auditado",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/users/:userId/status.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activa/desactiva y revoca sesiones al desactivar; motivo auditado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/staff/{userId}/permissions": {
+      "patch": {
+        "operationId": "patch_admin_staff_userId_permissions",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Ajusta permisos individuales de personal con motivo auditado",
+        "description": "Acceso: Admin. Ruta de compatibilidad original: /api/admin/staff/:userId/permissions.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ajusta permisos individuales de personal con motivo auditado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/commission-plans": {
+      "get": {
+        "operationId": "get_admin_commission_plans",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Consulta planes, vendedores activos y sorteos habilitados",
+        "description": "Acceso: Admin con `commission.manage` y `finance.manage`. Ruta de compatibilidad original: /api/admin/commission-plans.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta planes, vendedores activos y sorteos habilitados"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "post": {
+        "operationId": "post_admin_commission_plans",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Crea plan por vendedor/sorteo/modalidad; valida cruces de alcance y fechas",
+        "description": "Acceso: Admin con `commission.manage` y `finance.manage`. Ruta de compatibilidad original: /api/admin/commission-plans.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Crea plan por vendedor/sorteo/modalidad; valida cruces de alcance y fechas"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/commission-plans/{id}": {
+      "patch": {
+        "operationId": "patch_admin_commission_plans_id",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Edita/publica una regla activa con motivo auditado; no modifica importes de comisiones ya generadas",
+        "description": "Acceso: Admin con `commission.manage` y `finance.manage`. Ruta de compatibilidad original: /api/admin/commission-plans/:id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Edita/publica una regla activa con motivo auditado; no modifica importes de comisiones ya generadas"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/commission-plans/{id}/active": {
+      "patch": {
+        "operationId": "patch_admin_commission_plans_id_active",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Activa/desactiva el plan con motivo auditado",
+        "description": "Acceso: Admin con `commission.manage` y `finance.manage`. Ruta de compatibilidad original: /api/admin/commission-plans/:id/active.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activa/desactiva el plan con motivo auditado"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/contracts/options": {
+      "get": {
+        "operationId": "get_admin_contracts_options",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Consulta vendedores, sorteos, modalidades y planes disponibles para asignación",
+        "description": "Acceso: Admin con `finance.manage`. Ruta de compatibilidad original: /api/admin/contracts/options.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta vendedores, sorteos, modalidades y planes disponibles para asignación"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/contracts": {
+      "post": {
+        "operationId": "post_admin_contracts",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Asigna Contrata a vendedor y materializa cupos sobre sesiones existentes",
+        "description": "Acceso: Admin con `finance.manage`. Ruta de compatibilidad original: /api/admin/contracts.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asigna Contrata a vendedor y materializa cupos sobre sesiones existentes"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/mine": {
+      "get": {
+        "operationId": "get_prizes_mine",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Premios de tickets propios solamente",
+        "description": "Acceso: Dueño autenticado. Ruta de compatibilidad original: /api/prizes/mine.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Premios de tickets propios solamente"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/locations": {
+      "get": {
+        "operationId": "get_prizes_locations",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Locales activos; trabajador limitado a su local",
+        "description": "Acceso: Admin o trabajador autorizado. Ruta de compatibilidad original: /api/prizes/locations.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Locales activos; trabajador limitado a su local"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/validate": {
+      "post": {
+        "operationId": "post_prizes_validate",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Valida sin pagar; usa la función auditada de PostgreSQL",
+        "description": "Acceso: Admin/trabajador autorizado. Ruta de compatibilidad original: /api/prizes/validate.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Valida sin pagar; usa la función auditada de PostgreSQL"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/pay": {
+      "post": {
+        "operationId": "post_prizes_pay",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Pago explícito, local comprobado y función SQL de pago único",
+        "description": "Acceso: Admin/trabajador autorizado. Ruta de compatibilidad original: /api/prizes/pay.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pago explícito, local comprobado y función SQL de pago único"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/{prizeId}/credit": {
+      "post": {
+        "operationId": "post_prizes_prizeId_credit",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Transfiere premio al ledger por función SQL",
+        "description": "Acceso: Dueño del premio autenticado. Ruta de compatibilidad original: /api/prizes/:prizeId/credit.",
+        "parameters": [
+          {
+            "name": "prizeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfiere premio al ledger por función SQL"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/prizes/{prizeId}/withdrawal": {
+      "post": {
+        "operationId": "post_prizes_prizeId_withdrawal",
+        "tags": [
+          "prizes"
+        ],
+        "summary": "Solicita retiro con clave idempotente",
+        "description": "Acceso: Dueño del premio autenticado. Ruta de compatibilidad original: /api/prizes/:prizeId/withdrawal.",
+        "parameters": [
+          {
+            "name": "prizeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Solicita retiro con clave idempotente"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/withdrawals": {
+      "get": {
+        "operationId": "get_admin_withdrawals",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cola de retiros activos",
+        "description": "Acceso: Admin con `withdrawal.manage`. Ruta de compatibilidad original: /api/admin/withdrawals.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cola de retiros activos"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/withdrawals/advance": {
+      "post": {
+        "operationId": "post_admin_withdrawals_advance",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Transición controlada por `fn_advance_withdrawal`",
+        "description": "Acceso: Admin con `withdrawal.manage`. Ruta de compatibilidad original: /api/admin/withdrawals/advance.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transición controlada por `fn_advance_withdrawal`"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/finance/receivables": {
+      "get": {
+        "operationId": "get_admin_finance_receivables",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Saldos de crédito abiertos/parciales, abonos y trazabilidad por tenant",
+        "description": "Acceso: Admin con `finance.manage`. Ruta de compatibilidad original: /api/admin/finance/receivables.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saldos de crédito abiertos/parciales, abonos y trazabilidad por tenant"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/finance/receivables/{id}/payments": {
+      "post": {
+        "operationId": "post_admin_finance_receivables_id_payments",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Abono total/parcial idempotente; valida saldo y llama `fn_receive_receivable_payment`",
+        "description": "Acceso: Admin con `finance.manage`. Ruta de compatibilidad original: /api/admin/finance/receivables/:id/payments.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abono total/parcial idempotente; valida saldo y llama `fn_receive_receivable_payment`"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/finance/refunds": {
+      "post": {
+        "operationId": "post_admin_finance_refunds",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Crea solicitud pendiente por código de compra; bloquea el pago, valida monto restante y registra auditoría",
+        "description": "Acceso: Admin con `refund.manage`. Ruta de compatibilidad original: /api/admin/finance/refunds.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Crea solicitud pendiente por código de compra; bloquea el pago, valida monto restante y registra auditoría"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_admin_finance_refunds",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Cola tenant-scoped de devoluciones pendientes",
+        "description": "Acceso: Admin con `refund.manage`. Ruta de compatibilidad original: /api/admin/finance/refunds.",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cola tenant-scoped de devoluciones pendientes"
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    },
+    "/api/v1/admin/finance/refunds/{refundId}/complete": {
+      "post": {
+        "operationId": "post_admin_finance_refunds_refundId_complete",
+        "tags": [
+          "admin"
+        ],
+        "summary": "Acredita billetera por SQL o registra devolución externa ya realizada con método/referencia",
+        "description": "Acceso: Admin con `refund.manage`. Ruta de compatibilidad original: /api/admin/finance/refunds/:refundId/complete.",
+        "parameters": [
+          {
+            "name": "refundId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Acredita billetera por SQL o registra devolución externa ya realizada con método/referencia"
+          },
+          "201": {
+            "description": "Registro creado."
+          },
+          "400": {
+            "description": "Datos de entrada no válidos."
+          },
+          "401": {
+            "description": "Sesión requerida."
+          },
+          "403": {
+            "description": "Permiso insuficiente."
+          },
+          "500": {
+            "description": "Error interno con requestId."
+          }
+        }
+      }
+    }
+  }
+}

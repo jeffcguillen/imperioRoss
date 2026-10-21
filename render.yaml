@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: imperio-ross-api
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run typecheck:api
+    startCommand: npm run start:api
+    healthCheckPath: /health/ready
+    disk:
+      name: imperio-ross-private-files
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.3
+      - key: NODE_ENV
+        value: production
+      - key: API_HOST
+        value: 0.0.0.0
+      - key: DEFAULT_TENANT_SLUG
+        value: imperio-de-ross
+      - key: WEB_ORIGINS
+        sync: false
+      - key: DATABASE_STAFF_URL
+        sync: false
+      - key: DATABASE_ADMIN_URL
+        sync: false
+      - key: DATABASE_MIGRATOR_URL
+        sync: false
+      - key: SESSION_TTL_DAYS
+        value: 7
+      - key: STORAGE_PATH
+        value: /var/data/private-uploads
+      - key: MAX_PROOF_FILE_BYTES
+        value: 5242880
+      - key: SCHEDULED_PLAYS_ENABLED
+        value: "false"
+      - key: SCHEDULED_PLAYS_TENANT_IDS
+        value: ""
+      - key: SCHEDULED_PLAYS_INTERVAL_MS
+        value: 30000
+      - key: SCHEDULED_PLAYS_LOOKAHEAD_SECONDS
+        value: 300
+      - key: SCHEDULED_PLAYS_BATCH_SIZE
+        value: 25

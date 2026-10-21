@@ -1,0 +1,48 @@
+{
+  "name": "imperio-de-ross-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:api": "node --env-file-if-exists=.env --watch --import tsx server/index.ts",
+    "start:api": "node --env-file-if-exists=.env --import tsx server/index.ts",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx database/scripts/migrate.ts",
+    "db:bootstrap:local": "node --env-file=.local/dbadmin.env --import tsx database/scripts/bootstrap-local-roles.ts",
+    "db:seed:demo": "node --env-file-if-exists=.env --import tsx database/scripts/seed-demo.ts",
+    "db:seed:demo-users": "node --env-file-if-exists=.env --import tsx database/scripts/seed-demo-users.ts",
+    "db:seed:demo-operations": "node --env-file-if-exists=.env database/scripts/seed-demo-operations.mjs",
+    "docs:openapi": "node --env-file-if-exists=.env database/scripts/generate-openapi.mjs",
+    "build": "tsc -b && vite build",
+    "typecheck:api": "tsc --noEmit -p tsconfig.server.json",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.3",
+    "@fastify/cors": "^10.1.0",
+    "@fastify/helmet": "^13.2.0",
+    "@fastify/multipart": "^9.4.0",
+    "@fastify/rate-limit": "^10.3.0",
+    "@tanstack/react-query": "^5.83.0",
+    "bcryptjs": "^3.0.3",
+    "fastify": "^5.2.1",
+    "lucide-react": "^0.468.0",
+    "pg": "^8.13.1",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.11",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tsx": "^4.19.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "^3.2.4"
+  }
+}

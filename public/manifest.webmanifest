@@ -1,0 +1,15 @@
+{
+  "id": "/",
+  "name": "El Imperio de Ross",
+  "short_name": "Imperio Ross",
+  "description": "Tu momento. Tu suerte. Tu fortuna.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050f0b",
+  "theme_color": "#050f0b",
+  "lang": "es-EC",
+  "icons": [
+    { "src": "/brand/logo-monogram.png", "sizes": "500x500", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/logo-monogram.png", "sizes": "500x500", "type": "image/png", "purpose": "maskable" }
+  ]
+}

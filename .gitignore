@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.local/
+var/
+
+# Reference copies already backed up by the project owner; deploy the unified app only.
+/fortuna-gold-main/
+/fortuna-hub-main/
