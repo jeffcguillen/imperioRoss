@@ -14,10 +14,12 @@ El proxy `/api/*` de Netlify permite que el navegador use el mismo origen para e
 1. Crea una base PostgreSQL vacía en un proveedor administrado con PostgreSQL 15 o superior.
 2. Guarda un respaldo verificable de la base local por separado. El SQL base no migra una base existente.
 3. Instala `imperio_de_ross_completo.sql` solamente en la base vacía. El archivo contiene datos DEMO, bancos ficticios y hashes marcadores `REEMPLAZAR_HASH_REAL`; no son cuentas utilizables ni datos de producción. Reemplaza esos datos antes de abrir el sitio al público y registra cuentas administrativas nuevas con contraseñas únicas.
-4. Crea tres logins de runtime (`ir_api_staff`, `ir_api_admin`, `ir_migrator`) sin superusuario ni `BYPASSRLS`. Otorga `rf_api_staff` al login staff y `rf_api_admin` al login admin. Concede al migrador `USAGE, CREATE` sobre `app` y los permisos DDL requeridos. El usuario propietario de la base instala el SQL inicial; no conectes la aplicación como propietario, `rf_dev` ni superusuario.
-5. Configura conexiones TLS del proveedor para `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `DATABASE_MIGRATOR_URL`. Mantén las credenciales en el panel de Render.
+4. Crea los logins de runtime (`ir_api_staff`, `ir_api_admin`, `ir_migrator`) sin superusuario ni `BYPASSRLS`. Otorga `rf_api_staff` al login staff y `rf_api_admin` al login admin. El usuario propietario instala el SQL inicial y aplica migraciones desde un entorno operativo controlado; no conectes la API como propietario, `rf_dev` ni superusuario.
+5. Configura conexiones TLS del proveedor para `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `DATABASE_MIGRATOR_URL`. Mantén en Render únicamente credenciales de runtime de mínimo privilegio; la API no debe tener las credenciales del propietario.
 6. Configura `CLAIM_CODE_KEY` en el backend como secreto aleatorio estable de al menos 32 caracteres (por ejemplo, genera 32 bytes con un administrador de secretos). La clave cifra los códigos privados de premios; no la incluyas en Git, no la copies al frontend y no la rotes mientras existan códigos cifrados, salvo que regeneres los códigos de premios pendientes.
 7. Revisa las extensiones `pgcrypto`, `citext` y `pg_trgm` que solicita el SQL y confirma que el proveedor las permite.
+
+El conjunto actual de migraciones 0006-0008 crea un rol interno `NOLOGIN` y transfiere a este la propiedad de funciones `SECURITY DEFINER`; por eso el primer despliegue de estas migraciones requiere ejecutar `npm run db:migrate` desde un entorno operativo con credenciales propietarias/administrativas. Usa `DATABASE_MIGRATOR_URL` de mínimo privilegio para los procesos habituales y nunca lo sustituyas por la cuenta propietaria dentro del servicio Render.
 
 La base local `localhost` no es accesible desde Netlify ni Render. No subas un volcado con datos reales a GitHub.
 
