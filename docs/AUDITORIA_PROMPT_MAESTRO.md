@@ -140,6 +140,7 @@ Se comparó el archivo `C:\Users\Admin\Downloads\Prompt_Maestro_Imperio_de_Ross_
 - `CLAIM_CODE_KEY` se requiere en API, se agregó al `.env.example` y al backend Render; la clave local se guardó solo en `.env` ignorado. Producción debe provisionar su clave estable antes del despliegue.
 - Pruebas SQL de rechazo y cobro válido pasaron en transacciones DEMO y terminaron con `ROLLBACK`; también pasaron consultas de código por comprador autenticado y admin autorizado. No se efectuó ni se conservó ningún pago.
 - `tsc -b`, `vite build` y `tsc --noEmit -p tsconfig.server.json` pasaron. Vitest: 128 pruebas en 24 archivos aprobadas.
+- Se creó una compra/premio DEMO vigente en una sesión futura NO OFICIAL, y se regeneraron las claves perdidas de las cuatro cuentas `is_demo=true` en el archivo local ignorado. Verificación API de las cuatro cuentas: rol correcto, login 200, logout 204 y sesión revocada 401; el cliente consultó un premio con código privado sin caché.
 
 ## Solicitud administrativa de reembolso — 20 de octubre de 2026
 

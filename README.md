@@ -64,7 +64,7 @@ Correo/SMS, almacenamiento externo y pasarelas requieren credenciales reales. Co
 
 Para publicar el frontend, API y PostgreSQL con configuración de producción, sigue la guía [docs/DESPLIEGUE_NETLIFY.md](docs/DESPLIEGUE_NETLIFY.md). El frontend se publica en Netlify; la API persistente y sus comprobantes se alojan en Render, y PostgreSQL en un servicio administrado. No publiques `.env` ni subas datos reales a GitHub.
 
-Las cuentas y contraseñas aleatorias del entorno DEMO local están en `.local/demo-usuarios.txt` (archivo ignorado por Git). No compartas ese archivo. Los datos de ejemplo se agregan mediante seeds restringidos a desarrollo/local; para volver a crear actividad de ventas, comisiones y Contratas del vendedor, ejecuta en PowerShell:
+Las cuentas y contraseñas aleatorias del entorno DEMO local están en `.local/demo-usuarios.txt` (archivo ignorado por Git). No compartas ese archivo. Si se perdió y las cuentas DEMO ya tenían contraseña, ejecuta `npm run db:reset:demo-users` para generar claves nuevas y revocar sus sesiones previas; solo opera contra las cuatro cuentas `is_demo=true` de `localhost/imperio_de_ross`, y se niega a sobrescribir un archivo existente. Los datos de ejemplo se agregan mediante seeds restringidos a desarrollo/local; para volver a crear actividad de ventas, comisiones y Contratas del vendedor, ejecuta en PowerShell:
 
 ```powershell
 $env:NODE_ENV='development'

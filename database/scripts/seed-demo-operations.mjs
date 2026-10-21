@@ -4,11 +4,13 @@ const tenantId = 'a0000000-0000-0000-0000-000000000001';
 const adminId = 'c0000000-0000-0000-0000-000000000001';
 const clientId = 'c0000000-0000-0000-0000-000000000004';
 const drawCode = 'DEMO-LOCAL-OPERACIONES';
-const orderKey = 'demo-local-operations-ticket-v1';
+const orderKey = 'demo-local-operations-ticket-v2';
 
 if (process.env.NODE_ENV !== 'development') throw new Error('Solo se ejecuta en desarrollo local.');
 const connectionString = process.env.DATABASE_ADMIN_URL;
 if (!connectionString) throw new Error('DATABASE_ADMIN_URL es obligatorio.');
+const claimCodeKey = process.env.CLAIM_CODE_KEY;
+if (!claimCodeKey || claimCodeKey.length < 32) throw new Error('CLAIM_CODE_KEY debe tener al menos 32 caracteres para generar códigos privados de premio.');
 const connection = new URL(connectionString);
 if (!['localhost', '127.0.0.1', '::1'].includes(connection.hostname) || connection.pathname !== '/imperio_de_ross') {
   throw new Error('El seed solo puede escribir en localhost/imperio_de_ross.');
@@ -19,8 +21,8 @@ try {
   const db = await pool.connect();
   try {
     await db.query('BEGIN');
-    await db.query('SELECT set_config($1,$2,true), set_config($3,$4,true), set_config($5,$6,true)', [
-      'app.tenant_id', tenantId, 'app.user_id', adminId, 'app.environment', 'development',
+    await db.query('SELECT set_config($1,$2,true), set_config($3,$4,true), set_config($5,$6,true), set_config($7,$8,true)', [
+      'app.tenant_id', tenantId, 'app.user_id', adminId, 'app.environment', 'development', 'app.claim_key', claimCodeKey,
     ]);
 
     const identities = await db.query(
@@ -75,7 +77,7 @@ try {
     } else {
       const session = await db.query(
         `WITH timing AS (
-           SELECT (now() AT TIME ZONE $2)::date + 1 AS demo_date
+           SELECT (now() AT TIME ZONE $2)::date + 2 AS demo_date
          ), instants AS (
            SELECT demo_date, ((demo_date + time '20:00') AT TIME ZONE $2) AS draws_at FROM timing
          )
@@ -103,7 +105,7 @@ try {
 
     await db.query(
       `WITH timing AS (
-         SELECT (now() AT TIME ZONE $2)::date + 2 AS demo_date
+         SELECT (now() AT TIME ZONE $2)::date + 3 AS demo_date
        ), instants AS (
          SELECT demo_date, ((demo_date + time '20:00') AT TIME ZONE $2) AS draws_at FROM timing
        )
