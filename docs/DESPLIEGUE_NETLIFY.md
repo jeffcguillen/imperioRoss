@@ -16,7 +16,8 @@ El proxy `/api/*` de Netlify permite que el navegador use el mismo origen para e
 3. Instala `imperio_de_ross_completo.sql` solamente en la base vacía. El archivo contiene datos DEMO, bancos ficticios y hashes marcadores `REEMPLAZAR_HASH_REAL`; no son cuentas utilizables ni datos de producción. Reemplaza esos datos antes de abrir el sitio al público y registra cuentas administrativas nuevas con contraseñas únicas.
 4. Crea tres logins de runtime (`ir_api_staff`, `ir_api_admin`, `ir_migrator`) sin superusuario ni `BYPASSRLS`. Otorga `rf_api_staff` al login staff y `rf_api_admin` al login admin. Concede al migrador `USAGE, CREATE` sobre `app` y los permisos DDL requeridos. El usuario propietario de la base instala el SQL inicial; no conectes la aplicación como propietario, `rf_dev` ni superusuario.
 5. Configura conexiones TLS del proveedor para `DATABASE_STAFF_URL`, `DATABASE_ADMIN_URL` y `DATABASE_MIGRATOR_URL`. Mantén las credenciales en el panel de Render.
-6. Revisa las extensiones `pgcrypto`, `citext` y `pg_trgm` que solicita el SQL y confirma que el proveedor las permite.
+6. Configura `CLAIM_CODE_KEY` en el backend como secreto aleatorio estable de al menos 32 caracteres (por ejemplo, genera 32 bytes con un administrador de secretos). La clave cifra los códigos privados de premios; no la incluyas en Git, no la copies al frontend y no la rotes mientras existan códigos cifrados, salvo que regeneres los códigos de premios pendientes.
+7. Revisa las extensiones `pgcrypto`, `citext` y `pg_trgm` que solicita el SQL y confirma que el proveedor las permite.
 
 La base local `localhost` no es accesible desde Netlify ni Render. No subas un volcado con datos reales a GitHub.
 

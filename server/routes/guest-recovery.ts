@@ -94,7 +94,8 @@ export async function guestRecoveryRoutes(app: FastifyInstance) {
            SELECT jsonb_agg(jsonb_build_object(
              'ticketCode', t.code, 'ticketStatus', t.status, 'drawName', d.name,
              'drawDate', s.draw_date::text, 'digits', oi.digits, 'number', oi.number,
-             'amountCents', oi.amount_cents::text, 'itemStatus', oi.status
+             'amountCents', oi.amount_cents::text, 'itemStatus', oi.status,
+             'claimCode', CASE WHEN t.id IS NOT NULL THEN app.fn_get_guest_claim_code(t.id, o.id, $3) END
            ) ORDER BY oi.created_at) AS items
              FROM app.order_items oi
              JOIN app.draw_sessions s ON s.id = oi.session_id AND s.tenant_id = oi.tenant_id
@@ -104,9 +105,9 @@ export async function guestRecoveryRoutes(app: FastifyInstance) {
          ) lines ON true
         WHERE o.id = $1 AND o.tenant_id = $2 AND o.user_id IS NULL
         LIMIT 1`,
-      [found.rows[0].order_id, tenant.id],
+      [found.rows[0].order_id, tenant.id, phone],
     );
     if (!result.rows[0]) return reply.code(404).send({ code: 'GUEST_PURCHASE_NOT_FOUND', message: 'No encontramos una compra con esos datos. Revisa el código y el teléfono.' });
-    return { purchase: result.rows[0] };
+    return reply.header('Cache-Control', 'private, no-store').send({ purchase: result.rows[0] });
   });
 }

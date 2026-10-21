@@ -66,8 +66,10 @@ describe('guest purchase recovery', () => {
     const response = await app.inject({ method: 'POST', url: '/api/guest-purchases/recovery/verify', payload: { code: '#000123', phone: '0990000000', otp: '123456' } });
     expect(response.statusCode, response.body).toBe(200);
     expect(response.json().purchase).toEqual(purchase);
+    expect(response.headers['cache-control']).toBe('private, no-store');
     expect(query.mock.calls[2][0]).toContain('o.user_id IS NULL');
-    expect(query.mock.calls[2][1]).toEqual(['order-id', tenant.id]);
+    expect(query.mock.calls[2][0]).toContain('app.fn_get_guest_claim_code');
+    expect(query.mock.calls[2][1]).toEqual(['order-id', tenant.id, '+593990000000']);
   });
 
   it('does not look up an order when OTP validation fails', async () => {

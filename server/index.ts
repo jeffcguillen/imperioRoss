@@ -116,7 +116,7 @@ app.addHook('onRequest', async (request, reply) => {
     const client = await requestPool.connect();
     try {
       await client.query('BEGIN');
-      await client.query("SELECT set_config('app.tenant_id', $1, true), set_config('app.user_id', '', true)", [tenant.id]);
+      await client.query("SELECT set_config('app.tenant_id', $1, true), set_config('app.user_id', '', true), set_config('app.claim_key', $2, true)", [tenant.id, env.CLAIM_CODE_KEY]);
       request.tenant = tenant;
       request.database = { client, finished: false, cleanupPaths: [] };
 

@@ -32,7 +32,7 @@ export async function prizeRoutes(app: FastifyInstance) {
     const context = await requireActor(request, reply);
     if (!context) return reply;
     const result = await context.db.query(
-      `SELECT p.id, t.code AS "ticketCode", d.name AS "drawName", s.draw_date::text AS "drawDate",
+      `SELECT p.id, t.code AS "ticketCode", CASE WHEN p.status IN ('pending','generated') THEN app.fn_get_my_claim_code(t.id) END AS "claimCode", d.name AS "drawName", s.draw_date::text AS "drawDate",
               p.suerte_no AS "suerteNo", p.suerte_name AS "suerteName", p.number,
               p.prize_cents::text AS "prizeCents", p.status, p.expires_on::text AS "expiresOn"
          FROM app.prizes p
@@ -43,7 +43,7 @@ export async function prizeRoutes(app: FastifyInstance) {
         WHERE p.tenant_id = $1 AND o.user_id = $2
         ORDER BY p.created_at DESC LIMIT 100`, [context.tenant.id, context.actor.id],
     );
-    return { items: result.rows };
+    return reply.header('Cache-Control', 'private, no-store').send({ items: result.rows });
   });
 
   app.post('/prizes/:prizeId/credit', async (request, reply) => {
@@ -81,11 +81,11 @@ export async function prizeRoutes(app: FastifyInstance) {
     return { ticketCode: body.data.ticketCode, prizes: result.rows };
   });
 
-  app.post('/prizes/pay', async (request, reply) => {
+  app.post('/prizes/pay', { config: { rateLimit: { max: 12, timeWindow: '15 minutes' } } }, async (request, reply) => {
     const context = await requireActor(request, reply);
     if (!context) return reply;
     if (!['admin', 'worker'].includes(context.actor.role)) return reply.code(403).send({ code: 'SIN_PERMISO', message: 'Tu rol no puede pagar premios.' });
-    const body = z.object({ ticketId: z.string().uuid(), locationId: z.string().uuid().nullable(), method: z.enum(['cash', 'transfer']), proof: z.string().trim().max(300).optional() }).safeParse(request.body);
+    const body = z.object({ ticketId: z.string().uuid(), locationId: z.string().uuid().nullable(), method: z.enum(['cash', 'transfer']), proof: z.string().trim().max(300).optional(), claimCode: z.string().regex(/^\d{6}$/) }).safeParse(request.body);
     if (!body.success) return reply.code(400).send({ code: 'INVALID_DATA', message: 'Revisa los datos del pago.' });
     const permission = await context.db.query<{ allowed: boolean }>('SELECT app.fn_can($1, $2) AS allowed', [context.actor.id, 'prize.pay']);
     if (!permission.rows[0]?.allowed) return reply.code(403).send({ code: 'SIN_PERMISO', message: 'Tu cuenta no tiene permiso para pagar premios.' });
@@ -95,8 +95,23 @@ export async function prizeRoutes(app: FastifyInstance) {
       const location = await context.db.query('SELECT 1 FROM app.locations WHERE id = $1 AND tenant_id = $2 AND is_active', [locationId, context.tenant.id]);
       if (!location.rowCount) return reply.code(400).send({ code: 'INVALID_LOCATION', message: 'Selecciona un local activo.' });
     }
-    const result = await context.db.query('SELECT app.fn_confirm_prize_payment($1, $2, $3, $4, $5)::text AS amount_cents', [body.data.ticketId, context.actor.id, locationId, body.data.method, body.data.proof ?? null]);
+    const result = await context.db.query('SELECT app.fn_confirm_prize_payment($1, $2, $3, $4, $5, $6)::text AS amount_cents', [body.data.ticketId, context.actor.id, locationId, body.data.method, body.data.proof ?? null, body.data.claimCode]);
+    if (result.rows[0]?.amount_cents === '-1') return reply.code(400).send({ code: 'CLAIM_CODE_INVALID', message: 'El código de cobro no es válido.' });
+    if (result.rows[0]?.amount_cents === '-2') return reply.code(429).send({ code: 'CLAIM_CODE_LOCKED', message: 'Se bloquearon los intentos para este ticket. Espera 15 minutos antes de volver a intentar.' });
     return { amountCents: result.rows[0].amount_cents };
+  });
+
+  app.get('/admin/tickets/:ticketId/claim-code', async (request, reply) => {
+    const context = await requireActor(request, reply);
+    if (!context) return reply;
+    if (context.actor.role !== 'admin') return reply.code(403).send({ code: 'SIN_PERMISO', message: 'Solo Administración puede consultar códigos de cobro.' });
+    const params = z.object({ ticketId: z.string().uuid() }).safeParse(request.params);
+    if (!params.success) return reply.code(400).send({ code: 'INVALID_DATA', message: 'El ticket no es válido.' });
+    const permission = await context.db.query<{ allowed: boolean }>('SELECT app.fn_can($1, $2) AS allowed', [context.actor.id, 'prize.see_claim_code']);
+    if (!permission.rows[0]?.allowed) return reply.code(403).send({ code: 'SIN_PERMISO', message: 'Tu cuenta no tiene permiso para consultar códigos de cobro.' });
+    const result = await context.db.query<{ claimCode: string | null }>('SELECT app.fn_get_admin_claim_code($1) AS "claimCode"', [params.data.ticketId]);
+    if (!result.rows[0]?.claimCode) return reply.code(404).send({ code: 'CLAIM_CODE_UNAVAILABLE', message: 'El código de cobro no está disponible para este ticket.' });
+    return reply.header('Cache-Control', 'private, no-store').send({ claimCode: result.rows[0].claimCode });
   });
 }
 

@@ -31,8 +31,8 @@ La presencia de una pantalla o ruta no se considera prueba de funcionamiento int
 | 14. Compra, carrito y confirmación | Parcial | Compra conectada, borrador local, validación del servidor, comprobante e idempotencia. No representa el flujo como las cuatro pantallas descritas; revisar que favoritos/repetición siempre requieran revisión explícita. |
 | 15. Pagos y comprobantes | Parcial/bloqueado | Transferencia y revisión de comprobantes están conectadas. Pasarela y webhook firmado están pendientes de proveedor y sandbox; conciliación automática no está acreditada. |
 | 16. Billetera | Completo parcialmente verificado | Consulta de saldo/libro y recarga pendiente/aprobación están conectadas; se corrigió el nombre de columnas de `v_wallet_statement` y el GET se comprobó con sesión de cliente. El proveedor de pagos no está configurado. |
-| 17. Tickets | Parcial | Tickets propios, verificación pública y recuperación de compra de invitado por código+teléfono+OTP están presentes. El OTP `123456` está limitado al desarrollo local; entrega SMS productiva pendiente. |
-| 18. Resultados, planes y premios | Parcial | Publicación versionada, premios, validación, pago y acreditación usan funciones SQL. Revisar filtros públicos por modalidad/fecha y cobertura de premio acumulativo en integración. |
+| 17. Tickets | Parcial | Tickets propios, verificación pública y recuperación de compra de invitado por código+teléfono+OTP están presentes. Tras OTP se muestra el código privado del premio solo para tickets ganadores. El OTP `123456` está limitado al desarrollo local; entrega SMS productiva pendiente. |
+| 18. Resultados, planes y premios | Parcial; cobro protegido en PostgreSQL local | Migración 0006 aplicada: códigos cifrados recuperables por comprador, invitado verificado o admin autorizado; cobro SQL comprueba código dentro de la transacción, limita intentos, aplica expiración y evita pago duplicado. UI cliente/caja conectada y API con `no-store`. Falta configuración de clave en producción, E2E por rol y pruebas aisladas de premio acumulativo y conciliación. |
 | 19. Retiros y reembolsos | Parcial | `/admin/reembolsos` permite solicitar una devolución parcial/total por código de compra y resolver pendientes; billetera se acredita por SQL. Pagos externos requieren devolución manual previa, método y referencia. No se inicia transferencia bancaria real ni hay proveedor externo. |
 | 20. Administración | Parcial | Usuarios/permisos, locales, dashboard, agenda, sorteos, planes, revisión, rifas, finanzas, auditoría, búsqueda global, marca y cola de reembolsos están implementados. Anulaciones admin/worker respetan permisos; quedan automatizaciones financieras externas. |
 | 21. Punto de venta | Completo parcialmente verificado | Venta de mostrador y consulta propia verificadas con sesión DEMO; queda pendiente el recorrido del formulario UI y cierres en una base aislada. |
@@ -132,6 +132,14 @@ Se comparó el archivo `C:\Users\Admin\Downloads\Prompt_Maestro_Imperio_de_Ross_
 - La API liga OTP a tenant, teléfono normalizado y código de compra/ticket; la respuesta inicial es genérica, el hash queda HMAC, expira en 10 minutos y `fn_check_otp` controla intentos y consumo. La respuesta final solo contiene compra invitada sin datos de contacto.
 - El OTP fijo `123456` solo se usa en desarrollo de loopback y tests. Producción requiere proveedor SMS; no se simula entrega.
 - TypeScript API/frontend, 113 pruebas en 20 archivos y build Vite pasaron (chunk principal 475.53 kB). No se ejecutó contra PostgreSQL local ni se hizo QA de navegador; esos recorridos aún requieren verificar RLS y formato de teléfono con la BD real.
+
+## Código privado y pago de premios — 20 de octubre de 2026
+
+- `database/migrations/0006_prize_claim_security.sql` y correcciones 0007-0008 aplicadas con éxito en PostgreSQL local mediante `rf_dev`. Las migraciones agregan un rol `NOLOGIN` de alcance reducido, permisos mínimos para bloqueos de fila y lectura RLS del tenant, más una tabla RLS para intentos fallidos; el procesador SQL comprueba dueño del ticket, tenant, permiso de cobro, local activo, vigencia del premio y código de seis dígitos, bajo bloqueo transaccional. Cinco fallos bloquean ese ticket por 15 minutos; los pagos duplicados se rechazan.
+- API y pantallas: cliente autenticado e invitado con OTP pueden consultar el código; personal autorizado lo introduce al pagar y el administrador puede consultar el respaldo con permiso específico. La respuesta de códigos y la recuperación de compra usan `private, no-store`.
+- `CLAIM_CODE_KEY` se requiere en API, se agregó al `.env.example` y al backend Render; la clave local se guardó solo en `.env` ignorado. Producción debe provisionar su clave estable antes del despliegue.
+- Pruebas SQL de rechazo y cobro válido pasaron en transacciones DEMO y terminaron con `ROLLBACK`; también pasaron consultas de código por comprador autenticado y admin autorizado. No se efectuó ni se conservó ningún pago.
+- `tsc -b`, `vite build` y `tsc --noEmit -p tsconfig.server.json` pasaron. Vitest: 128 pruebas en 24 archivos aprobadas.
 
 ## Solicitud administrativa de reembolso — 20 de octubre de 2026
 

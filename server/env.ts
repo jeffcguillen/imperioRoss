@@ -8,6 +8,7 @@ const envSchema = z.object({
   DEFAULT_TENANT_SLUG: z.string().min(1).default('imperio-de-ross'),
   DATABASE_STAFF_URL: z.string().url(),
   DATABASE_ADMIN_URL: z.string().url(),
+  CLAIM_CODE_KEY: z.string().min(32),
   SESSION_TTL_DAYS: z.coerce.number().int().min(1).max(30).default(7),
   STORAGE_PATH: z.string().default('./var/private-uploads'),
   MAX_PROOF_FILE_BYTES: z.coerce.number().int().min(1024).max(5_242_880).default(5_242_880),

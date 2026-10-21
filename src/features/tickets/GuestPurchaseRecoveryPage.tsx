@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { postJson } from '../../services/http';
 import './tickets.css';
 
-type RecoveredItem = { ticketCode: string | null; ticketStatus: string | null; drawName: string; drawDate: string; digits: number; number: string; amountCents: string; itemStatus: string };
+type RecoveredItem = { ticketCode: string | null; ticketStatus: string | null; drawName: string; drawDate: string; digits: number; number: string; amountCents: string; itemStatus: string; claimCode: string | null };
 type RecoveredPurchase = { id: string; purchaseCode: string; status: string; totalCents: string; createdAt: string; paymentMethod: string; items: RecoveredItem[] };
 const money = (cents: string) => { try { const value = BigInt(cents); return `$${value / 100n}.${(value % 100n).toString().padStart(2, '0')}`; } catch { return '—'; } };
 const codePattern = /^(?:#\d{6}|RF-\d{4,10}|[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8})$/;
@@ -67,7 +67,7 @@ export function GuestPurchaseRecoveryPage() {
       </> : <>
         <div className="guest-recovered-heading"><CheckCircle2 size={25}/><div><h1>Compra localizada</h1><p>{purchase.purchaseCode} · {new Date(purchase.createdAt).toLocaleString('es-EC', { timeZone: 'America/Guayaquil', dateStyle: 'medium', timeStyle: 'short' })}</p></div></div>
         <div className="ticket-verify-details"><span>Estado de compra</span><strong>{purchase.status}</strong><span>Total</span><strong>{money(purchase.totalCents)}</strong></div>
-        {purchase.items.length ? <ol className="ticket-verify-lines guest-recovered-lines">{purchase.items.map((item, index) => <li key={`${purchase.id}-${index}`}><div><strong>{item.number} · {item.digits} cifras</strong><small>{item.drawName} · {new Date(`${item.drawDate}T12:00:00`).toLocaleDateString('es-EC', { dateStyle: 'medium' })}</small>{item.ticketCode && <Link className="text-link" to={`/verificar/${item.ticketCode}`}>Ver ticket {item.ticketCode} <ArrowRight size={13}/></Link>}</div><span>{money(item.amountCents)}</span></li>)}</ol> : <p className="coming-note">Los tickets se mostrarán aquí cuando la compra sea aprobada y emitida.</p>}
+        {purchase.items.length ? <ol className="ticket-verify-lines guest-recovered-lines">{purchase.items.map((item, index) => <li key={`${purchase.id}-${index}`}><div><strong>{item.number} · {item.digits} cifras</strong><small>{item.drawName} · {new Date(`${item.drawDate}T12:00:00`).toLocaleDateString('es-EC', { dateStyle: 'medium' })}</small>{item.ticketCode && <Link className="text-link" to={`/verificar/${item.ticketCode}`}>Ver ticket {item.ticketCode} <ArrowRight size={13}/></Link>}{item.claimCode && <div className="prize-claim-code"><span><ShieldCheck size={13}/> Código privado para cobrar</span><code>{item.claimCode}</code><small>Guárdalo y muéstralo únicamente al personal que registra el pago.</small></div>}</div><span>{money(item.amountCents)}</span></li>)}</ol> : <p className="coming-note">Los tickets se mostrarán aquí cuando la compra sea aprobada y emitida.</p>}
         <p className="guest-recovery-privacy"><ShieldCheck size={15}/> No se consultó ni mostró el teléfono, correo o documento del comprador.</p>
         <button className="button button-outline" type="button" onClick={reset}>Consultar otra compra</button>
       </>}

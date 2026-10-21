@@ -11,6 +11,7 @@ const envPath = resolve('.env');
 const envTextPath = resolve('.env.bootstrap.tmp');
 const names = { staff: 'ir_api_staff', admin: 'ir_api_admin', migrator: 'ir_migrator' } as const;
 const passwords = Object.fromEntries(Object.values(names).map((name) => [name, randomBytes(32).toString('base64url')])) as Record<(typeof names)[keyof typeof names], string>;
+const claimCodeKey = randomBytes(32).toString('base64url');
 const dbHost = '127.0.0.1';
 const dbPort = adminUrl.port || '5432';
 const database = 'imperio_de_ross';
@@ -25,6 +26,7 @@ const configuration = [
   `DATABASE_STAFF_URL=${url(names.staff)}`,
   `DATABASE_ADMIN_URL=${url(names.admin)}`,
   `DATABASE_MIGRATOR_URL=${url(names.migrator)}`,
+  `CLAIM_CODE_KEY=${claimCodeKey}`,
   'SESSION_TTL_DAYS=7',
   'STORAGE_PATH=./var/private-uploads',
   'MAX_PROOF_FILE_BYTES=5242880',
